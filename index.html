@@ -3,689 +3,1357 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Régua Piezométrica — Fechamento das Comportas dos Sifões · Eixão Lote 4</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Torque de acionamento — comporta vertical</title>
 <style>
 :root{
-  --abismo:#0A151E;
-  --leito:#122330;
-  --leito-2:#172C3B;
-  --linha:#223B4C;
-  --piezo:#4EA8DE;
-  --piezo-fraco:#2C6F97;
-  --sobre:#E5533D;
-  --geratriz:#5FBF7F;
-  --vapor:#F2B441;
-  --texto:#DFEAF1;
-  --fraco:#7B94A5;
-  --muito-fraco:#4E6675;
-  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
-  --disp:'Archivo','IBM Plex Sans',system-ui,sans-serif;
+  --paper:#1E3145;
+  --paper2:rgba(255,255,255,.055);
+  --panel:rgba(255,255,255,.045);
+  --field:rgba(6,14,22,.55);
+  --ink:#EAF1F6;
+  --ink2:#A6BCCC;
+  --steel:#7791A5;
+  --rule:rgba(255,255,255,.14);
+  --rule2:rgba(255,255,255,.28);
+  --water:#5CC0E8;
+  --water-deep:#1E6FA8;
+  --ochre:#E5B45A;
+  --oxide:#E7705A;
+  --moss:#6FCB98;
+  --lift:0 10px 26px rgba(0,0,0,.34), 0 2px 5px rgba(0,0,0,.25);
 }
 *{box-sizing:border-box}
+html{color-scheme:dark}
 html,body{margin:0;padding:0}
+input[type=checkbox]{accent-color:var(--water)}
 body{
-  background:var(--abismo);
-  color:var(--texto);
-  font-family:var(--sans);
+  background:#1B2C3E;
+  background-image:
+    radial-gradient(1100px 620px at 78% -8%, rgba(92,192,232,.20), transparent 62%),
+    radial-gradient(760px 520px at 4% 106%, rgba(30,111,168,.26), transparent 66%),
+    linear-gradient(163deg,#20374E 0%,#26445F 42%,#1A2B3C 100%);
+  background-attachment:fixed;
+  color:var(--ink);
+  font-family:"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   font-size:15px;
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
+  line-height:1.45;
+  min-height:100vh;
+  -webkit-text-size-adjust:100%;
 }
-.wrap{max-width:1080px;margin:0 auto;padding:28px 18px 80px}
+.num{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 80px}
 
-/* ---------- cabeçalho ---------- */
-.eyebrow{
-  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--piezo-fraco);margin:0 0 10px;
-}
-h1{
-  font-family:var(--disp);font-weight:800;font-stretch:112%;
-  font-size:clamp(28px,6.4vw,46px);line-height:1.02;letter-spacing:-.025em;
-  margin:0 0 12px;
-}
-h1 em{font-style:normal;color:var(--piezo)}
-.sub{color:var(--fraco);max-width:62ch;margin:0 0 4px;font-size:14.5px}
-.rule{height:1px;background:var(--linha);margin:26px 0}
+header.top{border-bottom:1px solid var(--rule2);padding-bottom:14px;margin-bottom:20px}
 
-/* ---------- controle de tempo ---------- */
-.painel{
-  background:var(--leito);border:1px solid var(--linha);border-radius:14px;
-  padding:20px 20px 22px;margin-bottom:22px;
-}
-.painel-topo{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;margin-bottom:16px}
-.rot{
-  font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--fraco);
-}
-.tf-valor{font-family:var(--disp);font-weight:800;font-size:44px;line-height:1;letter-spacing:-.03em;color:var(--piezo)}
-.tf-un{font-family:var(--mono);font-size:13px;color:var(--fraco);margin-left:-4px}
-.tag{
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
-  border:1px solid var(--linha);border-radius:999px;padding:3px 9px;color:var(--fraco);
-}
-.tag.med{border-color:var(--piezo-fraco);color:var(--piezo)}
+/* abas */
+.tabbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 20px}
+.tabbar button.tab{background:rgba(255,255,255,.05);color:var(--ink2);border:1px solid var(--rule);
+  border-radius:10px 10px 0 0;padding:8px 14px;font-size:.84rem;font-weight:600;box-shadow:none}
+.tabbar button.tab[aria-selected="true"]{background:linear-gradient(180deg,rgba(92,192,232,.28),rgba(92,192,232,.08));
+  color:var(--ink);border-color:rgba(92,192,232,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.tabbar .spacer{flex:1}
+#helpBtn{border-radius:10px}
+.pane{display:none}
+.pane.on{display:block}
+.modal{position:fixed;inset:0;background:rgba(6,14,22,.74);backdrop-filter:blur(4px);
+  display:none;align-items:flex-start;justify-content:center;padding:24px 14px;z-index:60;overflow:auto}
+.modal.on{display:flex}
+.modal-box{max-width:880px;width:100%;background:linear-gradient(160deg,#22384E,#182A3A);
+  border:1px solid var(--rule2);border-radius:14px;padding:18px 22px 26px;box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.modal-box h3{margin:18px 0 6px;font-size:.93rem;color:var(--water)}
+.modal-box p,.modal-box li{font-size:.85rem}
+.modal-box ul{padding-left:18px;margin:6px 0}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:4px}
+.modal-head strong{font-size:1.05rem}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;background:rgba(0,0,0,.30);
+  border-left:2px solid var(--water);padding:7px 10px;margin:7px 0;overflow-x:auto;white-space:pre}
+.src{display:inline-block;font-size:.66rem;letter-spacing:.03em;text-transform:uppercase;
+  color:var(--ochre);border:1px solid rgba(229,180,90,.45);background:rgba(229,180,90,.10);
+  border-radius:20px;padding:2px 9px;margin-left:8px;vertical-align:middle}
+.callout{border:1px solid var(--rule);border-left:3px solid var(--water);border-radius:10px;
+  padding:10px 12px;background:rgba(255,255,255,.045);font-size:.84rem;margin:10px 0}
+.callout.warn{border-left-color:var(--ochre)}
+.callout.bad{border-left-color:var(--oxide)}
+td.ok,span.ok{color:var(--moss)}td.warn,span.warn{color:var(--ochre)}td.bad,span.bad{color:var(--oxide)}
 
-input[type=range]{
-  -webkit-appearance:none;appearance:none;width:100%;height:34px;background:transparent;cursor:pointer;margin:0;
-}
-input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--linha);border-radius:2px}
-input[type=range]::-moz-range-track{height:4px;background:var(--linha);border-radius:2px}
-input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--piezo);
-  border:3px solid var(--abismo);margin-top:-9px;box-shadow:0 0 0 1px var(--piezo);
-}
-input[type=range]::-moz-range-thumb{
-  width:16px;height:16px;border-radius:50%;background:var(--piezo);border:3px solid var(--abismo);box-shadow:0 0 0 1px var(--piezo);
-}
-input[type=range]:focus-visible{outline:2px solid var(--piezo);outline-offset:6px;border-radius:6px}
+/* marca institucional em placa extrudada */
+header.top{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;flex-wrap:wrap}
+.hd-txt{flex:1 1 340px;min-width:0}
+.credit{margin-top:10px;font-size:.72rem;letter-spacing:.03em;color:#FFFFFF;opacity:.82}
+.brand{flex:0 0 auto;perspective:760px;padding:6px 10px 14px 0}
+.brand-3d{position:relative;width:156px;height:117px;transform-style:preserve-3d;
+  transform:rotateX(9deg) rotateY(-21deg);transition:transform .45s cubic-bezier(.3,1,.4,1)}
+.brand:hover .brand-3d,.brand:focus-within .brand-3d{transform:rotateX(5deg) rotateY(-9deg)}
+.brand-3d .lyr{position:absolute;inset:0;border-radius:9px;
+  background:linear-gradient(105deg,#F2F5F7 0%,#C3CDD5 42%,#8E9AA6 100%)}
+.brand-3d .face{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  border-radius:9px;box-shadow:0 0 0 1px rgba(255,255,255,.55)}
+.brand-3d .gloss{position:absolute;inset:0;border-radius:9px;pointer-events:none;
+  background:linear-gradient(118deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,.04) 36%,rgba(10,30,50,.14) 100%)}
+.brand-sh{position:absolute;left:8%;right:2%;bottom:-14px;height:20px;border-radius:50%;
+  background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.55),transparent 72%);filter:blur(5px);transform:translateZ(-40px)}
+@media(max-width:560px){.brand-3d{width:118px;height:88px}}
+@media (prefers-reduced-motion:reduce){.brand-3d{transition:none}}
 
-.presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.preset{
-  font-family:var(--mono);font-size:12px;background:var(--leito-2);color:var(--texto);
-  border:1px solid var(--linha);border-radius:8px;padding:7px 11px;cursor:pointer;
-  display:flex;flex-direction:column;gap:2px;align-items:flex-start;line-height:1.25;
-}
-.preset span{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--fraco)}
-.preset:hover{border-color:var(--piezo-fraco)}
-.preset[aria-pressed=true]{border-color:var(--piezo);color:var(--piezo)}
-.preset[aria-pressed=true] span{color:var(--piezo-fraco)}
-.preset:focus-visible{outline:2px solid var(--piezo);outline-offset:2px}
+header.top h1{font-size:1.35rem;font-weight:650;letter-spacing:-.01em;margin:0 0 2px}
+header.top p{margin:0;color:var(--ink2);font-size:.86rem;max-width:62ch}
 
-/* ---------- régua ---------- */
-.regua-box{background:var(--leito);border:1px solid var(--linha);border-radius:14px;padding:18px 6px 10px;margin-bottom:22px;overflow-x:auto}
-.regua-cab{padding:0 14px;margin-bottom:6px}
-h2{
-  font-family:var(--disp);font-weight:700;font-stretch:108%;font-size:19px;letter-spacing:-.015em;margin:0 0 4px;
+/* ---- hero gauge ---- */
+.hero{
+  background:linear-gradient(150deg,rgba(255,255,255,.10),rgba(255,255,255,.03) 55%,rgba(0,0,0,.10));
+  border:1px solid var(--rule);border-top-color:var(--rule2);
+  border-radius:14px;padding:18px 18px 14px;margin-bottom:22px;
+  box-shadow:var(--lift), inset 0 1px 0 rgba(255,255,255,.18);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
 }
-.legenda{display:flex;flex-wrap:wrap;gap:6px 16px;padding:8px 14px 2px;font-family:var(--mono);font-size:10.5px;color:var(--fraco)}
-.legenda i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-svg{display:block;width:100%;height:auto;min-width:620px}
-.regua-box svg{min-width:660px}
+.hero-val{text-shadow:0 2px 12px rgba(92,192,232,.35)}
+.hero-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:14px}
+.hero-val{font-size:2.7rem;font-weight:650;line-height:1}
+.hero-unit{font-size:1rem;color:var(--ink2)}
+.hero-cap{font-size:.85rem;color:var(--ink2);flex:1 1 220px}
+#verdict{font-weight:650;padding:3px 9px;border:1px solid;font-size:.82rem;white-space:nowrap}
+.v-ok{color:var(--moss);border-color:var(--moss);background:#1B2C22}
+.v-warn{color:var(--ochre);border-color:var(--ochre);background:#2E2717}
+.v-bad{color:var(--oxide);border-color:var(--oxide);background:#33201B}
 
-/* ---------- cards ---------- */
-.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px;margin-bottom:22px}
-.card{background:var(--leito);border:1px solid var(--linha);border-left:3px solid var(--linha);border-radius:12px;padding:14px 15px}
-.card h3{font-family:var(--disp);font-weight:700;font-size:16px;margin:0 0 2px;letter-spacing:-.01em}
-.card .meta{font-family:var(--mono);font-size:10.5px;color:var(--fraco);margin-bottom:11px}
-.linhas{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-family:var(--mono);font-size:12.5px}
-.linhas dt{color:var(--fraco)}
-.linhas dd{margin:0;text-align:right;font-weight:500}
-.estado{
-  margin-top:11px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
-  padding:5px 8px;border-radius:6px;display:inline-block;
-}
-.s-ok{border-left-color:var(--geratriz)!important}
-.s-ok .estado{background:rgba(95,191,127,.12);color:var(--geratriz)}
-.s-ok dd.destaque{color:var(--geratriz)}
-.s-margem{border-left-color:var(--piezo)!important}
-.s-margem .estado{background:rgba(78,168,222,.12);color:var(--piezo)}
-.s-margem dd.destaque{color:var(--piezo)}
-.s-neg{border-left-color:var(--vapor)!important}
-.s-neg .estado{background:rgba(242,180,65,.13);color:var(--vapor)}
-.s-neg dd.destaque{color:var(--vapor)}
-.s-crit{border-left-color:var(--sobre)!important}
-.s-crit .estado{background:rgba(229,83,61,.14);color:var(--sobre)}
-.s-crit dd.destaque{color:var(--sobre)}
+.gauge{position:relative;height:46px;margin-top:4px}
+.gauge .track{position:absolute;top:14px;left:0;right:0;height:18px;display:flex;border:1px solid var(--rule);border-radius:9px;overflow:hidden;box-shadow:inset 0 2px 6px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.10)}
+.gauge .z{height:100%}
+.z1{background:linear-gradient(180deg,rgba(111,203,152,.45),rgba(111,203,152,.14))}
+.z2{background:linear-gradient(180deg,rgba(229,180,90,.45),rgba(229,180,90,.14))}
+.z3{background:linear-gradient(180deg,rgba(231,112,90,.50),rgba(231,112,90,.16))}
+.gauge .mk{position:absolute;top:6px;width:2px;height:32px;background:var(--ink)}
+.gauge .mk::after{content:attr(data-l);position:absolute;top:34px;left:-18px;width:40px;text-align:center;font-size:.68rem;color:var(--ink2)}
+.gauge .needle{position:absolute;top:1px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:13px solid var(--water);transform:translateX(-8px);transition:left .22s cubic-bezier(.4,1.3,.5,1);filter:drop-shadow(0 3px 6px rgba(92,192,232,.55))}
+.gauge .needle.over{border-top-color:var(--oxide)}
 
-/* ---------- tabelas ---------- */
-.tab-box{background:var(--leito);border:1px solid var(--linha);border-radius:14px;padding:18px;margin-bottom:22px;overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px;min-width:520px}
-th{
-  text-align:right;font-weight:500;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
-  padding:0 8px 9px;border-bottom:1px solid var(--linha);white-space:nowrap;
+/* ---- layout ---- */
+.cols{display:grid;grid-template-columns:1fr;gap:26px}
+@media(min-width:900px){.cols{grid-template-columns:340px 1fr;align-items:start}}
+
+fieldset{
+  border:1px solid var(--rule);border-top-color:var(--rule2);border-radius:12px;
+  margin:0 0 14px;padding:12px 14px 14px;
+  background:linear-gradient(155deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  box-shadow:var(--lift), inset 0 1px 0 rgba(255,255,255,.14);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
+legend{font-size:.8rem;font-weight:650;letter-spacing:.02em;padding:0 8px;
+  background:rgba(92,192,232,.16);border:1px solid var(--rule);border-radius:20px;color:var(--water)}
+.f{margin-bottom:11px}
+.f .lab{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:.82rem;color:var(--ink2)}
+.f .lab b{color:var(--ink);font-weight:600}
+.f .ctl{display:flex;gap:8px;align-items:center;margin-top:3px}
+.f input[type=range]{flex:1;accent-color:var(--water);height:22px;min-width:0}
+.f input[type=number]{width:82px;padding:4px 6px;border:1px solid var(--rule);border-radius:7px;background:var(--field);color:var(--ink);font-family:ui-monospace,Menlo,monospace;font-size:.85rem;text-align:right;box-shadow:inset 0 2px 4px rgba(0,0,0,.35)}
+.f select{width:100%;padding:5px 7px;border:1px solid var(--rule);border-radius:7px;background:var(--field);color:var(--ink);font-size:.85rem;box-shadow:inset 0 2px 4px rgba(0,0,0,.35)}
+.f .hint{font-size:.72rem;color:var(--steel);margin-top:2px}
+.chk{display:flex;gap:8px;align-items:center;font-size:.84rem;margin-bottom:10px}
+
+/* ---- results ---- */
+h2{font-size:.95rem;font-weight:650;margin:0 0 10px;padding-bottom:6px;
+  border-bottom:1px solid var(--rule);
+  background:linear-gradient(90deg,var(--water),transparent 62%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+@supports not (background-clip:text){h2{color:var(--ink);background:none}}
+section.blk{margin-bottom:26px}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{text-align:right;padding:5px 6px;border-bottom:1px solid var(--rule)}
 th:first-child,td:first-child{text-align:left}
-td{padding:9px 8px;border-bottom:1px solid rgba(34,59,76,.5);text-align:right;white-space:nowrap}
-tbody tr:last-child td{border-bottom:none}
-td.nome{font-family:var(--sans);font-weight:500}
-.chip{font-size:11px;padding:2px 7px;border-radius:5px}
-.chip.ok{background:rgba(95,191,127,.13);color:var(--geratriz)}
-.chip.al{background:rgba(242,180,65,.13);color:var(--vapor)}
-.chip.cr{background:rgba(229,83,61,.14);color:var(--sobre)}
+thead th{font-size:.74rem;color:var(--ink2);font-weight:600;border-bottom:1px solid var(--rule2)}
+tbody td.num{font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+tr.tot td{font-weight:650;border-top:1px solid var(--rule2);border-bottom:2px solid var(--water);background:rgba(92,192,232,.08)}
+tr.sub td{color:var(--ink2)}
 
-/* ---------- parâmetros ---------- */
-.params{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-.param label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fraco);margin-bottom:6px}
-.param output{float:right;color:var(--piezo);font-weight:500;text-transform:none;letter-spacing:0}
-.nota{font-family:var(--sans);font-size:12.5px;color:var(--fraco);margin:6px 0 0;line-height:1.5}
+.flags{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:560px){.flags{grid-template-columns:1fr 1fr}}
+.flag{border:1px solid var(--rule);border-top-color:var(--rule2);border-left:3px solid var(--steel);border-radius:10px;padding:9px 11px;
+  background:linear-gradient(150deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  box-shadow:var(--lift), inset 0 1px 0 rgba(255,255,255,.14)}
+.flag .t{font-size:.75rem;color:var(--ink2)}
+.flag .v{font-weight:600;font-size:.92rem}
+.flag.ok{border-left-color:var(--moss)}
+.flag.warn{border-left-color:var(--ochre)}
+.flag.bad{border-left-color:var(--oxide)}
 
-/* ---------- alertas ---------- */
-.alerta{
-  background:var(--leito);border:1px solid var(--linha);border-left:3px solid var(--sobre);
-  border-radius:12px;padding:15px 17px;margin-bottom:12px;
-}
-.alerta h4{font-family:var(--disp);font-weight:700;font-size:14.5px;margin:0 0 6px}
-.alerta p{margin:0;font-size:13.5px;color:var(--fraco);line-height:1.55}
-.alerta.amb{border-left-color:var(--vapor)}
-.alerta code{font-family:var(--mono);font-size:12.5px;color:var(--texto);background:var(--leito-2);padding:1px 5px;border-radius:4px}
+.bars{margin:6px 0 14px}
+.bar{display:flex;height:30px;border:1px solid var(--rule);border-radius:8px;overflow:hidden;box-shadow:inset 0 2px 6px rgba(0,0,0,.4)}
+.bar div{display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#0E1D2A;overflow:hidden;white-space:nowrap;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35), inset 0 -6px 10px rgba(0,0,0,.18)}
+.leg{display:flex;flex-wrap:wrap;gap:12px;font-size:.75rem;color:var(--ink2);margin-top:6px}
+.leg i{display:inline-block;width:10px;height:10px;margin-right:4px}
 
-/* ---------- abas ---------- */
-.abas{display:flex;gap:6px;border-bottom:1px solid var(--linha);margin:26px 0 22px}
-.aba{
-  font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;
-  background:none;border:none;border-bottom:2px solid transparent;color:var(--fraco);
-  padding:10px 14px;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:7px;
-}
-.aba:hover{color:var(--texto)}
-.aba[aria-selected=true]{color:var(--piezo);border-bottom-color:var(--piezo)}
-.aba:focus-visible{outline:2px solid var(--piezo);outline-offset:-2px;border-radius:4px}
-.badge{
-  background:var(--sobre);color:#fff;font-size:10px;letter-spacing:0;
-  border-radius:999px;padding:1px 6px;line-height:1.5;
-}
+svg.scene{width:100%;height:auto;display:block;border:1px solid var(--rule);border-top-color:var(--rule2);border-radius:12px;
+  background:radial-gradient(120% 90% at 70% 0%,rgba(92,192,232,.16),transparent 60%),linear-gradient(165deg,rgba(255,255,255,.07),rgba(0,0,0,.16));
+  box-shadow:var(--lift), inset 0 1px 0 rgba(255,255,255,.14)}
+svg.chart{width:100%;height:210px;display:block;border:1px solid var(--rule);border-radius:10px;
+  background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(0,0,0,.10));box-shadow:var(--lift)}
+.chart .ax{stroke:var(--ink2);stroke-width:1}
+.chart .gr{stroke:var(--rule);stroke-width:1}
+.chart .ln{fill:none;stroke:var(--water);stroke-width:2.5}
+.chart .lim{stroke:var(--oxide);stroke-width:1;stroke-dasharray:4 3}
+.chart .lim2{stroke:var(--ochre);stroke-width:1;stroke-dasharray:4 3}
+.chart .cur{stroke:var(--ink);stroke-width:1;stroke-dasharray:2 3}
+.chart text{font-size:10px;fill:var(--ink2);font-family:ui-monospace,Menlo,monospace}
 
-/* ---------- tabelas de auditoria ---------- */
-table.aud{min-width:640px;font-size:12px}
-table.aud td{text-align:left;vertical-align:top;white-space:normal;line-height:1.5;padding:11px 9px}
-table.aud th{text-align:left}
-table.aud th:last-child,table.aud td:last-child{text-align:center;white-space:nowrap}
-table.aud td.ref{
-  font-weight:600;color:var(--piezo);text-align:center;white-space:nowrap;width:44px;
-}
-table.aud td b{color:var(--texto);font-weight:600}
-table.aud td sub{font-size:9px}
+.solver{background:linear-gradient(150deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  border:1px solid var(--rule);border-top-color:var(--rule2);border-left:3px solid var(--ochre);
+  border-radius:12px;padding:14px;box-shadow:var(--lift), inset 0 1px 0 rgba(255,255,255,.14)}
+.solver .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.solver select,.solver input{padding:4px 6px;border:1px solid var(--rule);background:var(--field);color:var(--ink);font-size:.85rem}
+.solver input{width:90px;text-align:right;font-family:ui-monospace,Menlo,monospace}
+button{font:inherit;font-size:.85rem;padding:6px 16px;border:1px solid rgba(255,255,255,.25);border-radius:8px;
+  background:linear-gradient(180deg,#5CC0E8,#1E6FA8);color:#08202F;font-weight:650;cursor:pointer;
+  box-shadow:0 4px 12px rgba(30,111,168,.45), inset 0 1px 0 rgba(255,255,255,.45)}
+button:active{transform:translateY(1px);box-shadow:0 2px 6px rgba(30,111,168,.4)}
+button.gh{background:rgba(255,255,255,.06);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--water);outline-offset:2px}
+#solverOut{font-size:.88rem;padding:8px 10px;background:var(--field);border:1px solid var(--rule);min-height:2.4em}
+#solverOut b{font-family:ui-monospace,Menlo,monospace;font-size:1.05rem}
 
-footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--linha);font-size:12.5px;color:var(--fraco);line-height:1.6}
-footer strong{color:var(--texto);font-weight:600}
-
-@media (max-width:640px){
-  .wrap{padding:20px 13px 60px}
-  .tf-valor{font-size:36px}
-  .painel{padding:16px}
-}
+.note{font-size:.78rem;color:var(--ink2);border-left:2px solid var(--rule);padding-left:10px;margin-top:10px}
+.note ul{margin:4px 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--rule);font-size:.75rem;color:var(--steel)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <p class="eyebrow">EIX-L4.GRL-REL-TEX-NTC-001-R00 · Rev. 00 · jan/2026</p>
-  <h1>Régua piezométrica<br><em>fechamento das comportas</em></h1>
-  <p class="sub">Seis sifões invertidos dos Trechos II e III do Eixão das Águas. Arraste o tempo de manobra e acompanhe a pressão que sobra na face de jusante de cada comporta.</p>
-
-  <nav class="abas" role="tablist">
-    <button class="aba" id="abaSim" role="tab" aria-selected="true" aria-controls="viewSim">Simulação</button>
-    <button class="aba" id="abaAud" role="tab" aria-selected="false" aria-controls="viewAud">Auditoria<span class="badge">26</span></button>
-  </nav>
-
-  <div id="viewSim" role="tabpanel" aria-labelledby="abaSim">
-
-  <div class="painel">
-    <div class="painel-topo">
-      <span class="rot">Tempo de fechamento</span>
-      <span><span class="tf-valor" id="tfValor">8</span><span class="tf-un"> min</span></span>
-      <span class="tag" id="tfOrigem">valor tabelado</span>
-    </div>
-    <input type="range" id="tf" min="1" max="120" step="1" value="8" aria-label="Tempo de fechamento da comporta, em minutos">
-    <div class="presets" id="presets">
-      <button class="preset" data-tf="8">8 min<span>padrão COGERH</span></button>
-      <button class="preset" data-tf="16">16 min<span>dobro · nota técnica</span></button>
-      <button class="preset" data-tf="30">30 min<span>POM COGERH/SRH</span></button>
-      <button class="preset" data-tf="90">90 min<span>parecer Prof. Righeto</span></button>
+<header class="top">
+  <div class="hd-txt">
+    <h1>Torque de acionamento — comporta vertical com fuso</h1>
+    <p>Cadeia completa: empuxo hidrostático → atrito de guias e vedações → força de içamento → torque no fuso → torque no motor. Mexa em qualquer parâmetro e tudo recalcula.</p>
+    <div class="credit">Design by @sothenis</div>
+  </div>
+  <div class="brand" tabindex="0" role="img" aria-label="COGERH — Companhia de Gestão dos Recursos Hídricos">
+    <div class="brand-3d">
+      <span class="brand-sh"></span>
+      <span class="lyr" style="transform:translateZ(-1.5px);filter:brightness(0.955)"></span><span class="lyr" style="transform:translateZ(-3.0px);filter:brightness(0.910)"></span><span class="lyr" style="transform:translateZ(-4.5px);filter:brightness(0.865)"></span><span class="lyr" style="transform:translateZ(-6.0px);filter:brightness(0.820)"></span><span class="lyr" style="transform:translateZ(-7.5px);filter:brightness(0.775)"></span><span class="lyr" style="transform:translateZ(-9.0px);filter:brightness(0.730)"></span><span class="lyr" style="transform:translateZ(-10.5px);filter:brightness(0.685)"></span><span class="lyr" style="transform:translateZ(-12.0px);filter:brightness(0.640)"></span><span class="lyr" style="transform:translateZ(-13.5px);filter:brightness(0.595)"></span><span class="lyr" style="transform:translateZ(-15.0px);filter:brightness(0.550)"></span><span class="lyr" style="transform:translateZ(-16.5px);filter:brightness(0.505)"></span><span class="lyr" style="transform:translateZ(-18.0px);filter:brightness(0.460)"></span><span class="lyr" style="transform:translateZ(-19.5px);filter:brightness(0.415)"></span><span class="lyr" style="transform:translateZ(-21.0px);filter:brightness(0.370)"></span>
+      <img class="face" alt="" src="data:image/webp;base64,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">
+      <span class="gloss"></span>
     </div>
   </div>
+</header>
 
-  <div class="regua-box">
-    <div class="regua-cab">
-      <h2>Pressão junto à comporta de montante</h2>
-      <p class="rot">m.c.a. · escoamento permanente menos o transitório</p>
+<div class="tabbar" role="tablist">
+  <button class="tab" role="tab" aria-selected="true" data-p="torque">Torque da comporta</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="transiente">Transiente e proteção</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="enchimento">Enchimento</button>
+  <button class="tab" role="tab" aria-selected="false" data-p="curva">Curva de vazão</button>
+  <span class="spacer"></span>
+  <button id="helpBtn" class="gh">Help</button>
+</div>
+
+<section id="pane-torque" class="pane on">
+
+<div class="hero">
+  <div class="hero-top">
+    <div><span class="hero-val num" id="heroT">—</span> <span class="hero-unit">N·m no fuso</span></div>
+    <div class="hero-cap" id="heroCap">torque de projeto na abertura (pico de partida × fator de serviço)</div>
+    <div id="verdict" class="v-ok">—</div>
+  </div>
+  <div class="gauge" id="gauge">
+    <div class="track"><div class="z z1" id="gz1"></div><div class="z z2" id="gz2"></div><div class="z z3" id="gz3"></div></div>
+    <div class="mk" id="gm1" data-l=""></div>
+    <div class="mk" id="gm2" data-l=""></div>
+    <div class="needle" id="gn"></div>
+  </div>
+</div>
+
+<div class="cols">
+
+<!-- ================= ENTRADAS ================= -->
+<div id="inputs">
+  <fieldset><legend>Hidráulica</legend><div id="g-hid"></div></fieldset>
+  <fieldset><legend>Comporta</legend>
+    <div class="f"><div class="lab"><span>Como definir o peso</span></div>
+      <select id="pesoModo"><option value="massa">Massa conhecida (kg)</option><option value="esp">Calcular pela espessura</option></select></div>
+    <div id="g-com"></div>
+    <label class="chk"><input type="checkbox" id="empuxo" checked> Descontar empuxo (comporta submersa)</label>
+  </fieldset>
+  <fieldset><legend>Atrito</legend><div id="g-atr"></div></fieldset>
+  <fieldset><legend>Fuso de manobra</legend>
+    <div class="f"><div class="lab"><span>Perfil da rosca</span></div>
+      <select id="rosca"><option value="15">Trapezoidal métrica 30° (Tr)</option><option value="14.5">ACME 29°</option><option value="0">Quadrada</option></select></div>
+    <div id="g-fuso"></div>
+    <div class="f"><div class="lab"><span>Escora axial</span></div>
+      <select id="escora"><option value="0.01">Rolamento de esferas (μ 0,01)</option><option value="0.05">Rolamento de rolos (μ 0,05)</option><option value="0.15">Bucha de bronze (μ 0,15)</option></select></div>
+    <div id="g-fuso2"></div>
+  </fieldset>
+  <fieldset><legend>Atuador e acionamento</legend><div id="g-atu"></div></fieldset>
+  <div style="display:flex;gap:8px"><button class="gh" id="reset">Restaurar valores do caso</button></div>
+</div>
+
+<!-- ================= SAÍDAS ================= -->
+<div id="out">
+
+<section class="blk">
+  <h2>Vista isométrica</h2>
+  <svg class="scene" id="scene" viewBox="0 0 1024 851" role="img" aria-label="Vista isométrica da comporta, do canal e da lâmina d'água"></svg>
+  <div class="note">Cena paramétrica: poço, tabuleiro, guias, haste e lâminas são reconstruídos a cada mudança de parâmetro, com cotas lidas dos controles. O atuador é recorte do render original, ancorado no topo da haste e escalado pela mesma projeção.</div>
+</section>
+
+<section class="blk">
+  <h2>Cadeia de forças</h2>
+  <table><thead><tr><th>Parcela</th><th>kN</th><th>tf</th><th>Observação</th></tr></thead>
+  <tbody id="tForcas"></tbody></table>
+  <div class="bars">
+    <div class="bar" id="barF"></div>
+    <div class="leg">
+      <span><i style="background:var(--ink2)"></i>peso efetivo</span>
+      <span><i style="background:var(--water)"></i>atrito nas guias</span>
+      <span><i style="background:var(--ochre)"></i>atrito das vedações</span>
     </div>
-    <svg id="regua" viewBox="0 0 700 400" role="img" aria-labelledby="reguaTit"><title id="reguaTit">Colunas de pressão mínima por sifão</title></svg>
-    <div class="legenda">
-      <span><i style="background:var(--piezo)"></i>carga estacionária</span>
-      <span><i style="background:var(--geratriz)"></i>pressão positiva</span>
-      <span><i style="background:var(--vapor)"></i>subpressão</span>
-      <span><i style="background:var(--sobre)"></i>abaixo do colapso do tubo</span>
-      <span><i style="background:#3A4E5C"></i>faixa de vapor (−10,33)</span>
+  </div>
+</section>
+
+<section class="blk">
+  <h2>Torque no fuso</h2>
+  <table><thead><tr><th>Manobra</th><th>Força axial<br>kN</th><th>T rosca<br>N·m</th><th>T escora<br>N·m</th><th>T total<br>N·m</th><th>Com FS<br>N·m</th></tr></thead>
+  <tbody id="tTorque"></tbody></table>
+  <div class="flags" style="margin-top:12px" id="flags"></div>
+</section>
+
+<section class="blk">
+  <h2>Lado motor</h2>
+  <table><tbody id="tMotor"></tbody></table>
+</section>
+
+<section class="blk">
+  <h2>Sensibilidade ao atrito das guias</h2>
+  <svg class="chart" id="chMu" viewBox="0 0 520 210" preserveAspectRatio="none" role="img" aria-label="Torque de projeto em função do coeficiente de atrito das guias"></svg>
+  <div class="note">Linha tracejada vermelha = torque máximo do atuador; ocre = torque de trabalho; vertical cinza = μ adotado agora.</div>
+</section>
+
+<section class="blk">
+  <h2>Sensibilidade à lâmina de montante</h2>
+  <svg class="chart" id="chH" viewBox="0 0 520 210" preserveAspectRatio="none" role="img" aria-label="Torque de projeto em função da lâmina de montante"></svg>
+</section>
+
+<section class="blk">
+  <h2>Resolver ao contrário</h2>
+  <div class="solver">
+    <div class="row">
+      <span>Qual o(a)</span>
+      <select id="svVar">
+        <option value="massa">massa máxima da comporta</option>
+        <option value="H1">lâmina de montante máxima</option>
+        <option value="muGs">μ máximo das guias</option>
+        <option value="p">passo máximo do fuso</option>
+        <option value="muT">μ máximo rosca/porca</option>
+        <option value="b">largura máxima da comporta</option>
+        <option value="preCarga">pré-carga máxima da vedação</option>
+      </select>
+      <span>para o torque de projeto ficar em</span>
+      <input type="number" id="svAlvo" value="230" step="5">
+      <span>N·m?</span>
+      <button id="svGo">Calcular</button>
     </div>
+    <div id="solverOut">Escolha a variável e o torque alvo.</div>
   </div>
+</section>
 
-  <div class="grade" id="cards"></div>
+<section class="blk">
+  <h2>Tempo de curso com inversor</h2>
+  <table><thead><tr><th>Frequência</th><th>Velocidade<br>mm/s</th><th>Tempo de curso<br>s</th><th>min</th></tr></thead>
+  <tbody id="tVfd"></tbody></table>
+  <div class="note">Proporcionalidade direta n ∝ f. Em torque constante (vetorial) a capacidade de içamento se mantém até a frequência mínima; abaixo de ~30 Hz confira ventilação do motor.</div>
+</section>
 
-  <div class="tab-box">
-    <h2>Curva de decaimento</h2>
-    <p class="rot" style="margin-bottom:10px">ΔH × tempo · escala log-log · pontos = valores tabelados no Hammer</p>
-    <svg id="curva" viewBox="0 0 700 340" role="img" aria-label="Variação de pressão versus tempo de fechamento"></svg>
-  </div>
+<section class="blk">
+  <h2>O que este cálculo não inclui</h2>
+  <div class="note"><ul>
+    <li>Downpull hidrodinâmico durante a abertura parcial — pode somar 10–30% em comporta sob escoamento.</li>
+    <li>Rigidez e desalinhamento do quadro, empenamento, incrustação e corrosão das guias.</li>
+    <li>Pico de descolamento inicial da vedação, que em borracha envelhecida pode superar a pré-carga adotada.</li>
+    <li>Torque de assentamento no fechamento, definido pela chave de torque do atuador.</li>
+    <li>Verificação estrutural da haste à tração e do conjunto porca/rosca ao esmagamento.</li>
+  </ul></div>
+</section>
 
-  <div class="tab-box">
-    <h2>Tempo mínimo de fechamento por critério</h2>
-    <p class="rot" style="margin-bottom:12px">Extrapolação pela lei de potência ajustada aos pontos com tf ≥ 5 min</p>
-    <table id="tabMin">
-      <thead><tr>
-        <th>Sifão</th><th>L (m)</th><th>Expoente n</th><th>R²</th>
-        <th>Sem colapso</th><th>P ≥ 0</th><th>P ≥ 1 mca</th><th>P ≥ 2 mca</th>
-      </tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
+</div>
+</div>
+</section>
 
-  <div class="tab-box">
-    <h2>Hammer × Michaud no tempo selecionado</h2>
-    <p class="rot" style="margin-bottom:12px">A fórmula do §2 da nota é Michaud (ΔH = 2LV/g·t<sub>f</sub>), não Allievi</p>
-    <table id="tabComp">
-      <thead><tr>
-        <th>Sifão</th><th>Michaud ΔH</th><th>Hammer ΔH</th><th>Razão</th>
-        <th>P estacionária</th><th>P mínima</th><th>Situação</th>
-      </tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
+<!-- ===================== TRANSIENTE ===================== -->
+<section id="pane-transiente" class="pane">
+<div class="cols">
+<div>
+  <fieldset><legend>Sifão e conduto</legend>
+    <div class="f"><div class="lab"><span>Preset</span></div>
+      <select id="sifaoPreset">
+        <option value="Boa Vista">Boa Vista</option><option value="Mão Ruiva">Mão Ruiva</option>
+        <option value="Melancias">Melancias</option><option value="Pirangi">Pirangi</option>
+        <option value="Serrote">Serrote</option><option value="Juazeirinho">Juazeirinho</option>
+        <option value="custom">Personalizado</option>
+      </select>
+      <div class="hint">Dados de terceiro — NT EIX-L4.GRL-REL-TEX-NTC-001-R00 (CCEA, jan/2026)</div></div>
+    <div id="g-tr1"></div>
+  </fieldset>
+  <fieldset><legend>Manobra</legend><div id="g-tr2"></div></fieldset>
+  <fieldset><legend>Ventosa / admissão de ar</legend>
+    <div class="f"><div class="lab"><span>Função</span></div>
+      <select id="funcVent">
+        <option value="anti">Anti-vácuo (admissão)</option>
+        <option value="cin">Cinética (expulsão em enchimento)</option>
+        <option value="auto">Automática (purga em operação)</option>
+      </select></div>
+    <div id="g-tr3"></div>
+  </fieldset>
+</div>
+<div>
+  <section class="blk"><h2>Celeridade e tempos característicos</h2>
+    <table><tbody id="tCel"></tbody></table></section>
+  <section class="blk"><h2>Variação de pressão na face de jusante</h2>
+    <table><tbody id="tTrans"></tbody></table>
+    <div class="flags" style="margin-top:12px" id="flagsTr"></div></section>
+  <section class="blk"><h2>Envoltória ΔH × tempo de fechamento</h2>
+    <svg class="chart" id="chTr" viewBox="0 0 520 210" preserveAspectRatio="none" role="img" aria-label="Variação de pressão pelo tempo de fechamento"></svg>
+    <div class="note">O fator de amplificação pré-carregado é a <b>razão média</b> informada no Quadro 3.9 da NT, não o valor específico de cada tempo — por isso a estimativa paramétrica e a coluna tabelada divergem em pontos isolados. Linha ocre = ΔH que zera a pressão manométrica (Hs). Vermelha = ΔH que atinge a carga crítica de colapso da casca. Vertical cinza = tempo adotado.</div></section>
+  <section class="blk"><h2>Tabela de tempos<span class="src">preset de terceiro</span></h2>
+    <table><thead><tr><th>t fech.</th><th>ΔH Michaud<br>m</th><th>ΔH ampliado<br>m</th><th>ΔH tabelado<br>NT · m</th><th>p mín.<br>mca</th><th>Situação</th></tr></thead>
+    <tbody id="tTrTab"></tbody></table></section>
+  <section class="blk"><h2>Dimensionamento da ventosa</h2>
+    <table><tbody id="tVent"></tbody></table>
+    <div class="note" id="ventNote"></div></section>
+  <section class="blk"><h2>Alternativas de proteção</h2>
+    <table><thead><tr><th>Dispositivo</th><th>Protege contra</th><th>Adequação a este caso</th></tr></thead>
+    <tbody id="tProt"></tbody></table>
+    <div class="callout" id="protCall"></div></section>
+</div>
+</div>
+</section>
 
-  <div class="tab-box">
-    <h2>Parâmetros do tubo e critério</h2>
-    <div class="params">
-      <div class="param">
-        <label for="vazao">Vazão por linha <output id="vazaoOut">9,5 m³/s</output></label>
-        <input type="range" id="vazao" min="4" max="14" step="0.5" value="9.5">
-      </div>
-      <div class="param">
-        <label for="esp">Espessura da parede <output id="espOut">7,938 mm</output></label>
-        <input type="range" id="esp" min="6" max="20" step="0.062" value="7.938">
-      </div>
-      <div class="param">
-        <label for="reforco">Crédito de resistência externa <output id="reforcoOut">1,0×</output></label>
-        <input type="range" id="reforco" min="1" max="20" step="0.5" value="1">
-        <p class="nota">Multiplicador sobre o colapso do tubo liso, para representar enterramento, envelope de concreto e anéis enrijecedores. Fica em 1,0× enquanto o projeto não fornecer a verificação.</p>
-      </div>
-      <div class="param">
-        <label for="criterio">Margem exigida de pressão <output id="criterioOut">0,0 mca</output></label>
-        <input type="range" id="criterio" min="0" max="5" step="0.5" value="0">
-      </div>
-    </div>
-    <p class="nota" id="pcolapso" style="margin-top:16px"></p>
-  </div>
+<!-- ===================== ENCHIMENTO ===================== -->
+<section id="pane-enchimento" class="pane">
+<div class="cols">
+<div>
+  <fieldset><legend>Critério de enchimento</legend>
+    <div class="f"><div class="lab"><span>Critério</span></div>
+      <select id="critEnch">
+        <option value="nt">5% da vazão de projeto (recomendação da NT)</option>
+        <option value="v03">v = 0,30 m/s (prática usual)</option>
+        <option value="man">Velocidade manual</option>
+      </select></div>
+    <div id="g-en"></div>
+  </fieldset>
+  <div class="callout">Geometria e vazão vêm da aba <b>Transiente</b>. Troque o preset lá para analisar outro sifão.</div>
+</div>
+<div>
+  <section class="blk"><h2>Volume, vazão e tempo</h2><table><tbody id="tEnch"></tbody></table></section>
+  <section class="blk"><h2>Arraste de bolsões de ar</h2>
+    <table><tbody id="tAr"></tbody></table>
+    <div class="callout" id="arCall"></div></section>
+  <section class="blk"><h2>Sobrepressão de reencontro de coluna</h2>
+    <table><thead><tr><th>Velocidade de reencontro</th><th>ΔH = a·Δv/g</th><th>Ordem de grandeza</th></tr></thead>
+    <tbody id="tReenc"></tbody></table></section>
+  <section class="blk"><h2>Expulsão de ar e ventosa cinética</h2><table><tbody id="tVentE"></tbody></table></section>
+  <section class="blk"><h2>Riscos do enchimento</h2><div class="note" id="riscoEnch"></div></section>
+</div>
+</div>
+</section>
 
-  </div><!-- /viewSim -->
+<!-- ===================== CURVA DE VAZÃO ===================== -->
+<section id="pane-curva" class="pane">
+<div class="cols">
+<div>
+  <fieldset><legend>Comporta e sistema</legend><div id="g-cv"></div></fieldset>
+  <fieldset><legend>Lei de manobra</legend>
+    <div class="f"><div class="lab"><span>Perfil de fechamento</span></div>
+      <select id="leiMan">
+        <option value="lin">Linear na posição</option>
+        <option value="dois">Dois estágios (rápido até 20%)</option>
+        <option value="cos">Senoidal</option>
+        <option value="cub">Cúbica (lenta no fim)</option>
+        <option value="tau">τ linear (ótima)</option>
+      </select></div>
+  </fieldset>
+</div>
+<div>
+  <section class="blk"><h2>Curva característica da comporta</h2>
+    <svg class="chart" id="chTau" viewBox="0 0 520 210" preserveAspectRatio="none" role="img" aria-label="Vazão relativa pela abertura relativa"></svg>
+    <div class="note">τ = Q(a)/Q₀. A curvatura vem da competição entre a perda de carga do conduto e a da comporta. Enquanto o conduto domina, fechar quase não reduz a vazão.</div></section>
+  <section class="blk"><h2>Tempo equivalente de fechamento</h2>
+    <table><tbody id="tEq"></tbody></table>
+    <div class="callout" id="eqCall"></div></section>
+  <section class="blk"><h2>τ ao longo da manobra</h2>
+    <svg class="chart" id="chLei" viewBox="0 0 520 210" preserveAspectRatio="none" role="img" aria-label="Vazão relativa ao longo do tempo"></svg></section>
+  <section class="blk"><h2>Comparação entre leis de manobra</h2>
+    <table><thead><tr><th>Lei</th><th>t equiv.<br>min</th><th>Amplificação<br>T/t_eq</th><th>ΔH<br>m</th></tr></thead>
+    <tbody id="tLeis"></tbody></table></section>
+  <section class="blk"><h2>Tabela Q(a)</h2>
+    <table><thead><tr><th>a/a_máx</th><th>Abertura<br>m</th><th>Área<br>m²</th><th>τ</th><th>Q<br>m³/s</th></tr></thead>
+    <tbody id="tQa"></tbody></table></section>
+</div>
+</div>
+</section>
 
-  <div id="viewAud" role="tabpanel" aria-labelledby="abaAud" hidden>
+<div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-label="Ajuda">
+ <div class="modal-box">
+  <div class="modal-head"><strong>Como este aplicativo calcula</strong><button id="helpClose">Fechar</button></div>
 
-  <p class="sub" style="margin-bottom:20px">Vinte e seis apontamentos verificados contra os Quadros 3.1, 3.2, 3.6, 3.7, 3.9 e 3.10 da nota técnica. Todos os recálculos foram refeitos a partir dos dados do próprio documento.</p>
+  <p>Quatro cadeias de cálculo independentes, que compartilham a geometria. Tudo é modelo de primeira ordem para pré-dimensionamento e verificação de ordem de grandeza — não substitui modelagem numérica dedicada nem projeto executivo.</p>
 
-  <div class="alerta">
-    <h4>16 minutos não zera a subpressão</h4>
-    <p>O §4 da nota afirma que fechar em 16 min “parece ser uma solução conservadora”. Pelo Quadro 3.10 combinado com o Quadro 3.9, Boa Vista fica em <code>2,21 − 3,39 = −1,18 mca</code> e Serrote em <code>1,81 − 2,98 = −1,17 mca</code>. Ainda é vácuo, e ainda supera o colapso do tubo liso.</p>
-  </div>
+  <h3>Aba Torque da comporta</h3>
+  <p>Parte do empuxo hidrostático e chega ao torque no eixo do motor.</p>
+  <div class="eq">F_H  = ρ·g·h_c·A_molhada          (montante − jusante)
+y_CP = h_c + I/(h_c·A)
+F_iç = W − E + μ_guia·F_H + μ_ved·(perímetro·pré-carga)
+T    = F·d_m/2 · (L + π·μ·d_m·secα)/(π·d_m − μ·L·secα) + F·μ_c·d_c/2</div>
+  <ul>
+   <li>O empuxo hidrostático é integrado, não aplicado como pressão média — a distribuição é triangular quando o topo coincide com o NA.</li>
+   <li>O torque do fuso usa a geometria da hélice, com semi-ângulo do perfil e atrito da escora separados. Não é a aproximação F·L/2πη.</li>
+   <li>Verifica autotravamento, rendimento do par rosca/porca e flambagem de Euler quando o fechamento exige compressão da haste.</li>
+   <li><b>Não inclui:</b> downpull hidrodinâmico, empenamento, incrustação, torque de assentamento.</li>
+  </ul>
 
-  <div class="alerta amb">
-    <h4>Linhas trocadas entre os Quadros 3.6 e 3.7</h4>
-    <p>O Quadro 3.2 dá Michaud de 7,39 m para Mão Ruiva (L = 1.123,08 m) e 7,63 m para Melancias (L = 1.160,86 m), coerente com os comprimentos. Nos Quadros 3.6 e 3.7 esses dois valores aparecem invertidos. Este painel usa os comprimentos do Quadro 3.1 como referência.</p>
-  </div>
+  <h3>Aba Transiente e proteção</h3>
+  <p>Celeridade para tubo de parede flexível, tempo crítico, e os dois limites clássicos.</p>
+  <div class="eq">a  = √[ (K/ρ) / (1 + (K/E)(D/e)·c₁) ]
+t_c = 2L/a
+ΔH_Joukowsky = a·V/g            (manobra rápida, t_f ≤ t_c)
+ΔH_Michaud   = 2·L·V/(g·t_f)    (manobra lenta, t_f > t_c)
+ΔH_aplicado  = ΔH_Michaud × fator de amplificação numérica</div>
+  <p>O fator de amplificação traduz a diferença entre a fórmula analítica e a modelagem por método das características. Os valores pré-carregados (2,7 a 4,3) são <b>dados de terceiro</b>, extraídos do Quadro 3.9 da NT EIX-L4.GRL-REL-TEX-NTC-001-R00. A aba Curva de vazão mostra de onde essa diferença provavelmente vem.</p>
+  <p>Duas verificações de contorno são feitas sobre a pressão mínima resultante:</p>
+  <div class="eq">Cavitação   : p_abs = p_atm + p_mín  ≤  p_vapor  →  formação de bolsa
+Colapso     : p_cr = 2E/(1−ν²)·(e/D)³      (casca cilíndrica lisa)</div>
+  <p>A verificação de colapso é independente da de cavitação: uma casca de parede fina pode amassar sob subpressão bem antes de a água vaporizar. Em tubo com anéis de reforço a carga crítica é maior — o valor calculado é o do tubo liso, portanto conservador.</p>
+  <p>A ventosa é dimensionada por escoamento compressível em orifício, não por regra de bolso:</p>
+  <div class="eq">ṁ = C_d·A·p₀·√[ 2k/((k−1)·R·T₀) · (r^(2/k) − r^((k+1)/k)) ]
+r = p_int/p₀ ;  regime crítico quando r ≤ (2/(k+1))^(k/(k−1)) ≈ 0,528</div>
 
-  <div class="alerta amb">
-    <h4>A curva da comporta não está declarada</h4>
-    <p>A divergência de 2,7× a 4,3× entre Hammer e Michaud é governada pela característica C<sub>v</sub> de fechamento adotada na simulação, que não consta na nota. Sem ela nenhum destes números é reproduzível.</p>
-  </div>
+  <h3>Aba Enchimento</h3>
+  <p>O enchimento é operação distinta do fechamento e frequentemente mais severa. Três verificações:</p>
+  <ul>
+   <li><b>Vazão e tempo</b> pelo critério adotado — 5% da vazão de projeto ou velocidade fixa.</li>
+   <li><b>Arraste de bolsão de ar</b> pelo critério de Kent: <span class="eq" style="display:inline;padding:2px 6px">V_c = 1,23·√(g·D·senθ)</span> — abaixo dessa velocidade o ar não é levado adiante e fica retido no ponto alto, estrangulando a seção.</li>
+   <li><b>Reencontro de coluna:</b> quando uma bolsa colapsa, a sobrepressão é ΔH = a·Δv/g. É por isso que encher devagar importa: a sobrepressão é proporcional à velocidade de reencontro, não ao volume.</li>
+  </ul>
 
-  <div class="tab-box">
-    <h2>A · Inconsistências numéricas internas</h2>
-    <table class="aud"><thead><tr><th>Ref.</th><th>Onde</th><th>O relatório traz</th><th>Constatação</th><th>Grav.</th></tr></thead><tbody>
-      <tr><td class="ref">A1</td><td>Quadros 3.6 e 3.7</td><td>Melancias com Michaud 7,39 e Mão Ruiva 7,63</td><td>Linhas trocadas. O Quadro 3.2 traz o correto — Mão Ruiva 7,39 (L=1.123,08) e Melancias 7,63 (L=1.160,86) — confirmado por recálculo de 2LV/(g·t<sub>f</sub>).</td><td><span class="chip al">Alta</span></td></tr>
-      <tr><td class="ref">A2</td><td>Quadro 3.9, razão de magnitude</td><td>Melancias 3,5× e Mão Ruiva 3,2×</td><td>Propagação de A1. Corretos: 3,4× e 3,3×. Os outros quatro sifões batem na casa decimal, o que prova que a razão saiu do quadro invertido.</td><td><span class="chip al">Alta</span></td></tr>
-      <tr><td class="ref">A3</td><td>Quadro 3.10, tempos curtos</td><td>ΔH de 88,74 / 80,12 / 46,89 m</td><td>Fisicamente inatingível. Com P<sub>est</sub>=2,21, ΔH=88,74 implica −86,5 mca contra piso de −10,33. Ocorre em 12 das 72 células.</td><td><span class="chip cr">Crítica</span></td></tr>
-      <tr><td class="ref">A4</td><td>§2 vs. Quadro 3.10</td><td>Declara uso do DVCM</td><td>Com DVCM ativo o modelo travaria na pressão de vapor e devolveria cavidade mais pico secundário, não ΔH de 88 m. Ou não foi ligado, ou a grandeza não é pressão mínima.</td><td><span class="chip cr">Crítica</span></td></tr>
-      <tr><td class="ref">A5</td><td>Celeridade</td><td>702,0 m/s e 701,98 m/s</td><td>Duas celeridades para o mesmo tubo. Eq. 2.2 e Eq. 2.5 partem de hipóteses distintas e c₁ nunca é numerado. Recálculo por Korteweg: 701,99 m/s.</td><td><span class="chip al">Média</span></td></tr>
-      <tr><td class="ref">A6</td><td>Figuras 3.5, 3.7, 3.8, 3.9</td><td>Eixos até 40, 16, 16 e 50 mca</td><td>O ponto de 1 min fica fora de escala sem indicação. Quem lê só as figuras não vê o pior caso.</td><td><span class="chip al">Média</span></td></tr>
-    </tbody></table>
-  </div>
+  <h3>Aba Curva de vazão</h3>
+  <p>Aqui está a explicação física da diferença entre a fórmula analítica e a simulação. A vazão não é proporcional à abertura: ela é governada pela soma das perdas.</p>
+  <div class="eq">K_comporta(a) = ( A_tubo / (C_c·b·a) )²
+K_conduto     = K_total(100%) − K_comporta(100%)
+τ(a) = Q(a)/Q₀ = √[ K_total(100%) / (K_conduto + K_comporta(a)) ]</div>
+  <p>Enquanto a comporta está bem aberta, quem manda é a perda do conduto e τ quase não cai. Perto do assentamento, a comporta assume e τ despenca. O transiente responde à taxa <i>dτ/dt</i>, não ao tempo total de curso, então:</p>
+  <div class="eq">t_equivalente = 1 / máx|dτ/dt|
+amplificação  = T_curso / t_equivalente</div>
+  <p>Uma manobra nominal de 8 minutos com lei linear na posição pode equivaler a 3 minutos de fechamento efetivo. A lei <b>τ linear</b> inverte numericamente a curva característica para manter dτ/dt constante — é a manobra que aproveita todo o tempo de curso.</p>
 
-  <div class="tab-box">
-    <h2>B · Contradições entre texto e quadros</h2>
-    <table class="aud"><thead><tr><th>Ref.</th><th>Onde</th><th>Contradição verificada</th><th>Grav.</th></tr></thead><tbody>
-      <tr><td class="ref">B1</td><td>§4, 1º marcador vs. Quadros 3.9 e 3.10</td><td>“16 minutos parecem ser uma solução conservadora”. Boa Vista: 2,21 − 3,39 = <b>−1,18 mca</b>. Serrote: 1,81 − 2,98 = <b>−1,17 mca</b>. Persiste vácuo.</td><td><span class="chip cr">Crítica</span></td></tr>
-      <tr><td class="ref">B2</td><td>§3 (Fig. 3.4) vs. Quadro 3.9</td><td>“Para fechamentos superiores a 8 min não há pressões negativas em nenhum ponto”. Em 8 min, quatro dos seis estão negativos: −3,80 / −3,27 / −0,53 / −0,35.</td><td><span class="chip cr">Crítica</span></td></tr>
-      <tr><td class="ref">B3</td><td>§3 (Juazeirinho) vs. Quadro 3.9</td><td>Conclui ausência de pressão negativa por leitura visual da envoltória. O quadro registra −0,01 mca.</td><td><span class="chip ok">Baixa</span></td></tr>
-      <tr><td class="ref">B4</td><td>Obs. do Quadro 3.9 vs. modelo</td><td>Fala em “pressões maiores nos pontos mais baixos”. O modelo simplificado tem só dois nós — não existem pontos intermediários em cinco dos seis sifões.</td><td><span class="chip al">Alta</span></td></tr>
-      <tr><td class="ref">B5</td><td>Obs. do Quadro 3.9, redação</td><td>A última coluna é descrita como sobrepressão máxima e, na frase seguinte, como o ponto de pressão mínima.</td><td><span class="chip ok">Baixa</span></td></tr>
-      <tr><td class="ref">B6</td><td>§1 vs. todo o documento</td><td>O objetivo é avaliar esforços acima da carga de trabalho da comporta. <b>Nenhum esforço em kN é calculado em lugar algum.</b></td><td><span class="chip cr">Crítica</span></td></tr>
-    </tbody></table>
-  </div>
+  <h3>Procedência dos dados</h3>
+  <ul>
+   <li>Presets dos seis sifões (L, pressão estacionária, fator de amplificação, tempo crítico): <b>dados de terceiro</b>, NT EIX-L4.GRL-REL-TEX-NTC-001-R00, Rev. 00, 28/01/2026, CCEA / SRH-CE. Reproduzidos para permitir verificação independente.</li>
+   <li>Coeficientes de atrito de guias e vedações: faixas de DIN 19704 e USACE EM 1110-2-2701.</li>
+   <li>Propriedades de material, celeridade e escoamento compressível: valores correntes de literatura, todos editáveis.</li>
+  </ul>
+  <p style="color:var(--ink2)">Nenhum resultado deste aplicativo constitui verificação de projeto. Os valores servem para orientar ensaio, dimensionar consulta a fabricante e checar ordem de grandeza.</p>
+ </div>
+</div>
 
-  <div class="tab-box">
-    <h2>C · Nomenclatura e conceito</h2>
-    <table class="aud"><thead><tr><th>Ref.</th><th>Onde</th><th>Observação</th></tr></thead><tbody>
-      <tr><td class="ref">C1</td><td>§2, Eq. 2.1</td><td>Chamada de “Allievi modificada”. Com t<sub>c</sub>=2L/a reduz a ΔH = 2LV/(g·t<sub>f</sub>) — <b>Michaud (1878)</b>. Allievi é a solução em cadeia; ΔH = aV/g é Joukowsky. Os Quadros 3.3–3.8 rotulam “Allievi + Michaud”, contradizendo o §2.</td></tr>
-      <tr><td class="ref">C2</td><td>§2, Eq. 2.2</td><td>Apresentada como adaptação de Allievi. É a <b>fórmula de Korteweg</b>.</td></tr>
-      <tr><td class="ref">C3</td><td>§2, constantes</td><td>“2,2.109 Pa” e “2,0.1011 Pa” — expoentes perdidos. Corretos: 2,2×10⁹ e 2,0×10¹¹.</td></tr>
-      <tr><td class="ref">C4</td><td>§2, atrito transiente</td><td>“Unstead-Vitkovsky” (falta o <i>y</i>). O modelo adotado foi <b>Steady</b>, que no HAMMER equivale a desprezar o atrito transiente — conservador, mas não declarado nem confrontado com Vitkovsky.</td></tr>
-      <tr><td class="ref">C5</td><td>§1 e §4</td><td>“Lotes II e III”. São <b>Trechos</b> II e III do <b>Lote 4</b>. Erro repetido.</td></tr>
-      <tr><td class="ref">C6</td><td>Todo o documento</td><td>Zero referências normativas. Sem DIN 19704, AWWA M11, NBR 12215-1 ou ASCE MOP 79, não há critério de aceitação declarado.</td></tr>
-    </tbody></table>
-  </div>
-
-  <div class="tab-box">
-    <h2>D · Lacunas que impedem a conclusão</h2>
-    <table class="aud"><thead><tr><th>Ref.</th><th>Item ausente</th><th>Consequência</th></tr></thead><tbody>
-      <tr><td class="ref">D1</td><td>Curva C<sub>v</sub>(τ) da comporta</td><td>Governa a divergência de 2,7–4,3×. Sem ela o estudo é irreproduzível e inauditável.</td></tr>
-      <tr><td class="ref">D2</td><td>Verificação de pressão externa</td><td>D/e ≈ 315. Timoshenko dá ≈1,4 mca de colapso contra −3,80 mca em 8 min.</td></tr>
-      <tr><td class="ref">D3</td><td>Tempo mínimo calculado</td><td>Cita “relatos” do POM (30 min) e parecer Righetto (90 min) sem calcular. Extrapolação dos próprios dados: ≈26 e ≈31 min para zerar.</td></tr>
-      <tr><td class="ref">D4</td><td>Colapso da cavidade de vapor</td><td>DVCM citado, nenhum pico secundário reportado. É o esforço que dimensiona equipamento e tubo.</td></tr>
-      <tr><td class="ref">D5</td><td>Cenários dimensionantes</td><td>Falta de energia, fechamento por gravidade, emergência, duas linhas simultâneas, comporta de jusante, onda de translação no canal.</td></tr>
-      <tr><td class="ref">D6</td><td>Sensibilidade ao ar entranhado</td><td>a = 702 m/s pressupõe água sem ar. O §4 admite o risco. Com 0,5–1% de ar livre o fenômeno muda de natureza.</td></tr>
-      <tr><td class="ref">D7</td><td>Mitigação por projeto</td><td>Nenhuma ventosa de duplo efeito, tanque unidirecional ou fechamento em dois estágios é avaliado.</td></tr>
-      <tr><td class="ref">D8</td><td>Validação fora do Juazeirinho</td><td>Aferido em 860 m e aplicado a 2.066 m sem nova verificação.</td></tr>
-    </tbody></table>
-  </div>
-
-  <div class="alerta amb">
-    <h4>Ressalvas desta auditoria</h4>
-    <p>D2 e D4 podem constar de documento separado do mesmo pacote — confirmar antes de caracterizar omissão. O cálculo de colapso ignora enterramento e enrijecedores. E se o consórcio esclarecer que a grandeza do Quadro 3.10 é queda de carga irrestrita e não pressão mínima, A3 deixa de ser impossibilidade física e vira problema de rotulagem. Nos três casos a providência é a mesma: esclarecimento formal.</p>
-  </div>
-
-  </div><!-- /viewAud -->
-
-  <footer>
-    <strong>Origem dos dados.</strong> Quadros 3.1, 3.2, 3.9 e 3.10 da Nota Técnica EIX-L4.GRL-REL-TEX-NTC-001-R00. Valores tabelados vão de 1 a 16 min; fora dessa faixa o painel extrapola por lei de potência ajustada em log-log aos pontos com t<sub>f</sub> ≥ 5 min, região onde não há cavitação relatada.<br><br>
-    <strong>Colapso do tubo.</strong> P<sub>cr</sub> = 2E/(1−ν²)·(e/D)³ para tubo circular liso, com E = 200 GPa e ν = 0,3. É ordem de grandeza para disparar verificação segundo AWWA M11, não veredicto estrutural.<br><br>
-    <strong>Fora do escopo.</strong> Colapso de cavidade de vapor, fechamento simultâneo das duas linhas da duplicação, enchimento do sifão, celeridade reduzida por ar entranhado e onda de translação no canal de montante. Nenhum desses cenários está na nota nem neste painel.
-  </footer>
+<footer>Modelo de primeira ordem para pré-dimensionamento e verificação de margem. Confirmar com dados de placa, catálogo do fabricante do atuador e medição de corrente em manobra real.</footer>
 </div>
 
 <script>
 "use strict";
+const G=9.80665, ESTEEL=200e9;
 
-const TF = [1,2,3,4,5,6,7,8,9,10,15,16];
+const DEFS=[
+ {g:'g-hid',id:'b',    lab:'Largura da comporta', u:'m',    min:0.3,max:8,   step:0.05, v:2.5},
+ {g:'g-hid',id:'hg',   lab:'Altura da comporta',  u:'m',    min:0.3,max:8,   step:0.05, v:2.5},
+ {g:'g-hid',id:'H1',   lab:'Lâmina a montante (acima da soleira)', u:'m', min:0,max:12, step:0.05, v:2.5},
+ {g:'g-hid',id:'H2',   lab:'Lâmina a jusante',    u:'m',    min:0,max:12,  step:0.05, v:0},
+ {g:'g-hid',id:'rho',  lab:'Massa específica do fluido', u:'kg/m³', min:900,max:1200,step:5, v:1000},
 
-const SIFOES = [
-  {nome:"Boa Vista",  trecho:"Trecho II",  L:2065.95, pEst:2.21, tcrit:4,
-   hammer:[88.74,40.64,21.88,14.11,10.33,8.21,6.90,6.03,5.41,4.95,3.75,3.39]},
-  {nome:"Serrote",    trecho:"Trecho III", L:1826.74, pEst:1.81, tcrit:3,
-   hammer:[80.12,33.61,17.77,11.52,8.52,6.84,5.80,5.10,4.60,4.23,3.26,2.98]},
-  {nome:"Melancias",  trecho:"Trecho II",  L:1160.86, pEst:2.17, tcrit:2,
-   hammer:[46.89,15.50,8.16,5.49,4.21,3.48,3.02,2.71,2.48,2.31,1.85,1.74]},
-  {nome:"Mão Ruiva",  trecho:"Trecho II",  L:1123.08, pEst:2.24, tcrit:2,
-   hammer:[44.43,14.56,7.69,5.20,4.00,3.32,2.89,2.59,2.38,2.22,1.79,1.68]},
-  {nome:"Juazeirinho",trecho:"Trecho III", L:860.53,  pEst:1.82, tcrit:1,
-   hammer:[29.69,9.23,5.01,3.48,2.73,2.31,2.03,1.84,1.70,1.60,1.31,1.25]},
-  {nome:"Pirangi",    trecho:"Trecho III", L:566.81,  pEst:1.80, tcrit:1,
-   hammer:[14.76,4.67,2.70,1.97,1.60,1.38,1.24,1.14,1.07,1.01,0.85,0.82]}
+ {g:'g-com',id:'massa',lab:'Massa da comporta',   u:'kg',   min:50,max:20000,step:10, v:1000, only:'massa'},
+ {g:'g-com',id:'esp',  lab:'Espessura equivalente',u:'mm',  min:3,max:120,  step:0.5,  v:20.4, only:'esp'},
+ {g:'g-com',id:'rhoAco',lab:'Massa específica do material',u:'kg/m³',min:2000,max:8500,step:50,v:7850},
+ {g:'g-com',id:'submFrac',lab:'Fração submersa',  u:'%',    min:0,max:100, step:1,  v:100},
+
+ {g:'g-atr',id:'muGs', lab:'μ guias — partida',   u:'',     min:0.05,max:0.7,step:0.01, v:0.40, hint:'DIN 19704: 0,40 metal/metal; 0,20–0,25 com patins de bronze ou UHMW'},
+ {g:'g-atr',id:'muGr', lab:'μ guias — regime',    u:'',     min:0.05,max:0.7,step:0.01, v:0.30},
+ {g:'g-atr',id:'muSeal',lab:'μ vedação',          u:'',     min:0.1,max:1.0,step:0.01, v:0.60, hint:'borracha sobre inox seco: 0,5–0,7'},
+ {g:'g-atr',id:'perim',lab:'Perímetro de vedação',u:'m',    min:0,max:30,  step:0.1,  v:7.5,  hint:'padrão: largura + 2 × altura'},
+ {g:'g-atr',id:'preCarga',lab:'Pré-carga linear da vedação',u:'kN/m',min:0,max:15,step:0.1,v:3.0},
+
+ {g:'g-fuso',id:'d',   lab:'Diâmetro nominal do fuso', u:'mm', min:20,max:150,step:1, v:60},
+ {g:'g-fuso',id:'p',   lab:'Passo',               u:'mm',   min:2,max:30,  step:0.5,  v:8},
+ {g:'g-fuso',id:'entradas',lab:'Número de entradas',u:'',   min:1,max:4,   step:1,    v:1},
+ {g:'g-fuso',id:'muT', lab:'μ rosca/porca',       u:'',     min:0.05,max:0.35,step:0.005,v:0.15, hint:'aço/bronze lubrificado: 0,12–0,18'},
+ {g:'g-fuso2',id:'dc', lab:'Diâmetro médio da escora',u:'mm',min:20,max:250,step:5,   v:80},
+ {g:'g-fuso2',id:'Lf', lab:'Comprimento livre de flambagem',u:'m',min:0.2,max:8,step:0.05,v:2.5},
+ {g:'g-fuso2',id:'K',  lab:'Fator de vínculo K',  u:'',     min:0.5,max:2.1,step:0.1, v:2.0, hint:'2,0 engastado–livre · 1,0 birrotulado · 0,7 engastado–rotulado'},
+
+ {g:'g-atu',id:'Ttrab',lab:'Torque de trabalho do atuador',u:'N·m',min:20,max:2000,step:5,v:230},
+ {g:'g-atu',id:'Tmax', lab:'Torque máximo do atuador',u:'N·m',min:20,max:2500,step:5,v:250},
+ {g:'g-atu',id:'FS',   lab:'Fator de serviço',    u:'',     min:1,max:2.5, step:0.05, v:1.5},
+ {g:'g-atu',id:'i',    lab:'Relação do redutor',  u:':1',   min:1,max:200, step:1,    v:20},
+ {g:'g-atu',id:'etaRed',lab:'Rendimento do redutor',u:'',   min:0.2,max:0.95,step:0.01,v:0.35},
+ {g:'g-atu',id:'nMot', lab:'Rotação do motor',    u:'rpm',  min:600,max:3600,step:10, v:1800},
+ {g:'g-atu',id:'t60',  lab:'Tempo de curso atual a 60 Hz',u:'s',min:10,max:2000,step:1,v:271},
+
+ {g:'g-tr1',id:'Lsif', lab:'Comprimento do sifão',u:'m',   min:50,max:5000,step:1,   v:2065.95},
+ {g:'g-tr1',id:'Dsif', lab:'Diâmetro interno',    u:'m',   min:0.3,max:4,   step:0.05,v:2.5},
+ {g:'g-tr1',id:'esp_t',lab:'Espessura da parede', u:'mm',  min:3,max:40,   step:0.001,v:7.938},
+ {g:'g-tr1',id:'Qsif', lab:'Vazão por linha',     u:'m³/s',min:0.1,max:30, step:0.1, v:9.5},
+ {g:'g-tr1',id:'Hs',   lab:'Pressão dinâmica estacionária',u:'mca',min:0,max:50,step:0.01,v:2.21},
+ {g:'g-tr1',id:'Eaco', lab:'Módulo do material',  u:'GPa', min:50,max:250, step:1,   v:200},
+ {g:'g-tr1',id:'Kagua',lab:'Compressibilidade da água',u:'GPa',min:1.5,max:2.5,step:0.05,v:2.2},
+ {g:'g-tr1',id:'c1',   lab:'Fator de ancoragem c1',u:'',   min:0.7,max:1.1,step:0.01,v:1.0,hint:'0,91 ancorado nas duas pontas · 1,00 com juntas de expansão'},
+
+ {g:'g-tr2',id:'tf',   lab:'Tempo de fechamento', u:'min', min:0.5,max:60, step:0.5, v:8},
+ {g:'g-tr2',id:'ampl', lab:'Fator de amplificação numérica',u:'x',min:1,max:6,step:0.1,v:4.3,hint:'razão Hammer/analítico — preset de terceiro'},
+ {g:'g-tr2',id:'plim', lab:'Pressão mínima admissível',u:'mca',min:-5,max:5,step:0.1,v:0},
+
+ {g:'g-tr3',id:'Qar',  lab:'Vazão de ar requerida',u:'m³/s',min:0.1,max:30,step:0.1,v:9.5},
+ {g:'g-tr3',id:'dpV',  lab:'Diferencial admissível',u:'bar',min:0.05,max:0.7,step:0.01,v:0.35},
+ {g:'g-tr3',id:'CdV',  lab:'Coeficiente de descarga',u:'', min:0.4,max:0.9,step:0.01,v:0.65},
+ {g:'g-tr3',id:'Tar',  lab:'Temperatura do ar',   u:'°C',  min:0,max:50,  step:1,   v:20},
+
+ {g:'g-en',id:'vench', lab:'Velocidade de enchimento',u:'m/s',min:0.02,max:1.0,step:0.01,v:0.10},
+ {g:'g-en',id:'decliv',lab:'Declividade do trecho',u:'%',  min:0,max:30,  step:0.5, v:10},
+ {g:'g-en',id:'dvReenc',lab:'Velocidade de reencontro',u:'m/s',min:0.05,max:3,step:0.05,v:0.10},
+
+ {g:'g-cv',id:'bcv',   lab:'Largura da comporta',  u:'m',  min:0.3,max:8,  step:0.05,v:2.5},
+ {g:'g-cv',id:'acv',   lab:'Abertura máxima',      u:'m',  min:0.3,max:8,  step:0.05,v:2.5},
+ {g:'g-cv',id:'dHcv',  lab:'Desnível disponível',  u:'m',  min:0.1,max:20, step:0.05,v:2.2},
+ {g:'g-cv',id:'Ccv',   lab:'Coeficiente de contração',u:'',min:0.5,max:0.75,step:0.01,v:0.61},
+ {g:'g-cv',id:'Tman',  lab:'Tempo de curso',       u:'min',min:0.5,max:60, step:0.5, v:8}
 ];
 
-const D = 2.5, AREA = Math.PI*D*D/4, G = 9.81, E_ACO = 200e9, NU = 0.3, RHO = 1000;
-const P_VAPOR = -10.33;
-const COR = {piezo:"#4EA8DE", geratriz:"#5FBF7F", vapor:"#F2B441", sobre:"#E5533D", linha:"#223B4C", fraco:"#7B94A5"};
-
-// ---- ajuste log-log na cauda (tf >= 5 min) ----
-function ajustar(s){
-  const xs=[], ys=[];
-  TF.forEach((t,i)=>{ if(t>=5){ xs.push(Math.log(t)); ys.push(Math.log(s.hammer[i])); } });
-  const n=xs.length;
-  const mx=xs.reduce((a,b)=>a+b,0)/n, my=ys.reduce((a,b)=>a+b,0)/n;
-  let sxy=0,sxx=0,syy=0;
-  for(let i=0;i<n;i++){ const dx=xs[i]-mx, dy=ys[i]-my; sxy+=dx*dy; sxx+=dx*dx; syy+=dy*dy; }
-  const b=sxy/sxx, a=Math.exp(my-b*mx), r2=(sxy*sxy)/(sxx*syy);
-  s.A=a; s.n=b; s.r2=r2;
+const S={};
+function build(){
+ DEFS.forEach(d=>{
+  const host=document.getElementById(d.g); if(!host) return;
+  const w=document.createElement('div'); w.className='f'; w.dataset.only=d.only||'';
+  w.innerHTML=`<div class="lab"><span>${d.lab}</span><b class="num" id="v_${d.id}"></b></div>
+   <div class="ctl"><input type="range" id="r_${d.id}" min="${d.min}" max="${d.max}" step="${d.step}" value="${d.v}" aria-label="${d.lab}">
+   <input type="number" id="n_${d.id}" min="${d.min}" max="${d.max}" step="${d.step}" value="${d.v}" aria-label="${d.lab} valor"></div>
+   ${d.hint?`<div class="hint">${d.hint}</div>`:''}`;
+  host.appendChild(w);
+  const r=w.querySelector('#r_'+d.id), n=w.querySelector('#n_'+d.id), lb=w.querySelector('#v_'+d.id);
+  S[d.id]=d.v;
+  const sync=(val,from)=>{ let x=parseFloat(val); if(isNaN(x))return;
+    x=Math.min(d.max,Math.max(d.min,x)); S[d.id]=x;
+    if(from!=='r')r.value=x; if(from!=='n')n.value=x;
+    lb.textContent=fmt(x)+(d.u?' '+d.u:''); run(); };
+  r.addEventListener('input',e=>sync(e.target.value,'r'));
+  n.addEventListener('input',e=>sync(e.target.value,'n'));
+  lb.textContent=fmt(d.v)+(d.u?' '+d.u:'');
+ });
+ ['pesoModo','rosca','escora','empuxo'].forEach(id=>document.getElementById(id).addEventListener('change',run));
+ document.getElementById('reset').addEventListener('click',()=>{
+   DEFS.forEach(d=>{const r=document.getElementById('r_'+d.id);if(!r)return;
+     r.value=d.v;document.getElementById('n_'+d.id).value=d.v;S[d.id]=d.v;
+     document.getElementById('v_'+d.id).textContent=fmt(d.v)+(d.u?' '+d.u:'');});
+   document.getElementById('pesoModo').value='massa';
+   document.getElementById('rosca').value='15';
+   document.getElementById('escora').value='0.01';
+   document.getElementById('empuxo').checked=true; run();});
+ document.getElementById('svGo').addEventListener('click',solve);
 }
-SIFOES.forEach(ajustar);
+function fmt(x,dec){ const n=(dec===undefined)?(Math.abs(x)>=100?1:(Math.abs(x)>=10?2:3)):dec;
+ return x.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:n}); }
+function f1(x){return x.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});}
+function f0(x){return x.toLocaleString('pt-BR',{maximumFractionDigits:0});}
 
-const fmt=(v,d=2)=>v.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
-
-function dH(s,tf){
-  const i=TF.indexOf(tf);
-  if(i>=0) return {v:s.hammer[i], tab:true};
-  return {v:s.A*Math.pow(tf,s.n), tab:false};
-}
-function michaud(s,tf){ return 2*s.L*estado.V/(G*tf*60); }
-function tempoPara(s,alvo){                 // alvo = ΔH admissível
-  if(alvo<=0) return Infinity;
-  return Math.pow(s.A/alvo, -1/s.n);
-}
-
-const estado = {tf:8, Q:9.5, V:9.5/AREA, e:0.007938, reforco:1, criterio:0, pCol:0};
-
-function calcColapso(){
-  const pcr = 2*E_ACO/(1-NU*NU)*Math.pow(estado.e/D,3);   // Pa
-  estado.pCol = (pcr/(RHO*G))*estado.reforco;             // mca
-}
-
-function classificar(pMin){
-  if(pMin <= P_VAPOR) return {cls:"s-crit", txt:"cavitação", chip:"cr"};
-  if(pMin <= -estado.pCol) return {cls:"s-crit", txt:"abaixo do colapso", chip:"cr"};
-  if(pMin < 0) return {cls:"s-neg", txt:"vácuo parcial", chip:"al"};
-  if(pMin < estado.criterio) return {cls:"s-margem", txt:"sem margem", chip:"al"};
-  return {cls:"s-ok", txt:"dentro do critério", chip:"ok"};
-}
-
-// ================= RÉGUA =================
-const VMAX=6, VMIN=-13, RY0=44, RY1=344;
-const yv = v => RY0 + (VMAX-Math.max(VMIN,Math.min(VMAX,v)))/(VMAX-VMIN)*(RY1-RY0);
-
-let anim = SIFOES.map(()=>({pMin:0, ini:false}));
-const reduz = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-function desenharRegua(){
-  const svg=document.getElementById("regua");
-  const NS="http://www.w3.org/2000/svg";
-  let h="";
-  const colW=72, x0=76, gap=(700-x0-14-colW)/(SIFOES.length-1);
-
-  // faixa de vapor
-  h+=`<rect x="${x0-22}" y="${yv(P_VAPOR)}" width="${700-x0-2+22}" height="${RY1-yv(P_VAPOR)}" fill="#1B2C38" opacity=".75"/>`;
-
-  // grade
-  for(let v=VMAX; v>=VMIN; v-=2){
-    const y=yv(v);
-    const forte = v===0;
-    h+=`<line x1="${x0-22}" y1="${y}" x2="686" y2="${y}" stroke="${forte?"#3E5C70":COR.linha}" stroke-width="${forte?1.4:1}" ${forte?"":'stroke-dasharray="2 5"'}/>`;
-    h+=`<text x="${x0-30}" y="${y+4}" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="10.5" fill="${forte?"#9FB6C4":COR.fraco}">${v>0?"+":""}${v}</text>`;
-  }
-  // linha de vapor
-  h+=`<line x1="${x0-22}" y1="${yv(P_VAPOR)}" x2="686" y2="${yv(P_VAPOR)}" stroke="#4B6272" stroke-width="1" stroke-dasharray="6 4"/>`;
-  h+=`<text x="686" y="${yv(P_VAPOR)-6}" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#6B8394" letter-spacing="1">PRESSÃO DE VAPOR −10,33</text>`;
-  // linha de colapso
-  const yc=yv(-estado.pCol);
-  if(-estado.pCol>VMIN){
-    h+=`<line x1="${x0-22}" y1="${yc}" x2="686" y2="${yc}" stroke="${COR.sobre}" stroke-width="1" stroke-dasharray="3 3" opacity=".8"/>`;
-    h+=`<text x="686" y="${yc+13}" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="${COR.sobre}" letter-spacing="1">COLAPSO DO TUBO −${fmt(estado.pCol,2)}</text>`;
-  }
-  h+=`<text x="10" y="${(RY0+RY1)/2}" transform="rotate(-90 10 ${(RY0+RY1)/2})" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}" letter-spacing="1.5">M.C.A.</text>`;
-
-  SIFOES.forEach((s,i)=>{
-    const x=x0+i*gap;
-    const a=anim[i];
-    const pEstY=yv(s.pEst), pMinY=yv(a.pMin);
-    const est=classificar(a.pMin);
-    const cor = est.chip==="cr"?COR.sobre : est.chip==="al"?COR.vapor : COR.geratriz;
-
-    // marcador da carga estacionária
-    h+=`<line x1="${x-4}" y1="${pEstY}" x2="${x+colW+4}" y2="${pEstY}" stroke="${COR.piezo}" stroke-width="2"/>`;
-    h+=`<circle cx="${x-4}" cy="${pEstY}" r="2.6" fill="${COR.piezo}"/>`;
-
-    // excursão
-    const top=Math.min(pEstY,pMinY), alt=Math.max(2,Math.abs(pMinY-pEstY));
-    h+=`<rect x="${x+16}" y="${top}" width="${colW-32}" height="${alt}" fill="${cor}" opacity=".2"/>`;
-    h+=`<line x1="${x+colW/2}" y1="${pEstY}" x2="${x+colW/2}" y2="${pMinY}" stroke="${cor}" stroke-width="2" opacity=".55"/>`;
-
-    // cap da pressão mínima
-    h+=`<rect x="${x}" y="${pMinY-2.5}" width="${colW}" height="5" rx="2.5" fill="${cor}"/>`;
-    const rot = (a.pMin<VMIN? "≤ −13" : (a.pMin>0?"+":"")+fmt(a.pMin,2));
-    const acima = a.pMin > -1.2;
-    h+=`<text x="${x+colW/2}" y="${acima?pMinY+16:pMinY-9}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="12.5" font-weight="600" fill="${cor}">${rot}</text>`;
-
-    // nome
-    h+=`<text x="${x+colW/2}" y="${RY1+22}" text-anchor="middle" font-family="Archivo,sans-serif" font-size="12.5" font-weight="700" fill="#C6D7E2">${s.nome}</text>`;
-    h+=`<text x="${x+colW/2}" y="${RY1+36}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="${COR.fraco}">${Math.round(s.L)} m</text>`;
-  });
-
-  svg.innerHTML=`<title>Colunas de pressão mínima por sifão</title>`+h;
+function readP(){
+ const p=Object.assign({},S);
+ p.pesoModo=document.getElementById('pesoModo').value;
+ p.alpha=parseFloat(document.getElementById('rosca').value)*Math.PI/180;
+ p.muC=parseFloat(document.getElementById('escora').value);
+ p.empuxo=document.getElementById('empuxo').checked;
+ return p;
 }
 
-// ================= CURVA log-log =================
-function desenharCurva(){
-  const svg=document.getElementById("curva");
-  const X0=52,X1=676,Y0=22,Y1=282;
-  const lx=t=>X0+(Math.log10(t)-0)/(Math.log10(120))*(X1-X0);
-  const ly=v=>Y1-(Math.log10(v)-Math.log10(0.3))/(Math.log10(120)-Math.log10(0.3))*(Y1-Y0);
-  let h="";
-
-  [1,2,5,10,20,30,60,120].forEach(t=>{
-    h+=`<line x1="${lx(t)}" y1="${Y0}" x2="${lx(t)}" y2="${Y1}" stroke="${COR.linha}" stroke-width="1" stroke-dasharray="2 5"/>`;
-    h+=`<text x="${lx(t)}" y="${Y1+16}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}">${t}</text>`;
-  });
-  [0.5,1,2,5,10,20,50,100].forEach(v=>{
-    h+=`<line x1="${X0}" y1="${ly(v)}" x2="${X1}" y2="${ly(v)}" stroke="${COR.linha}" stroke-width="1" stroke-dasharray="2 5"/>`;
-    h+=`<text x="${X0-8}" y="${ly(v)+4}" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}">${String(v).replace(".",",")}</text>`;
-  });
-  h+=`<text x="${(X0+X1)/2}" y="${Y1+34}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}" letter-spacing="1.5">TEMPO DE FECHAMENTO (min)</text>`;
-  h+=`<text x="14" y="${(Y0+Y1)/2}" transform="rotate(-90 14 ${(Y0+Y1)/2})" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}" letter-spacing="1.5">ΔH (m)</text>`;
-
-  const paleta=["#E5533D","#F2854B","#F2B441","#7FD1A0","#4EA8DE","#9B8BE0"];
-
-  SIFOES.forEach((s,i)=>{
-    let d="";
-    for(let k=0;k<=90;k++){
-      const t=Math.pow(10, Math.log10(1)+k/90*Math.log10(120));
-      const v=s.A*Math.pow(t,s.n);
-      if(v<0.3) break;
-      d+=(k===0?"M":"L")+lx(t).toFixed(1)+" "+ly(v).toFixed(1)+" ";
-    }
-    h+=`<path d="${d}" fill="none" stroke="${paleta[i]}" stroke-width="1.9" opacity=".9"/>`;
-    TF.forEach((t,j)=>{ if(s.hammer[j]>=0.3) h+=`<circle cx="${lx(t)}" cy="${ly(s.hammer[j])}" r="2.6" fill="${paleta[i]}"/>`; });
-  });
-
-  // marcador do tf atual
-  const X=lx(estado.tf);
-  h+=`<line x1="${X}" y1="${Y0}" x2="${X}" y2="${Y1}" stroke="${COR.piezo}" stroke-width="1.6"/>`;
-  h+=`<text x="${X}" y="${Y0-6}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10.5" fill="${COR.piezo}">${estado.tf} min</text>`;
-
-  // legenda
-  SIFOES.forEach((s,i)=>{
-    const cx=60+i*106, cy=Y1+58;
-    h+=`<rect x="${cx}" y="${cy-7}" width="9" height="9" rx="2" fill="${paleta[i]}"/>`;
-    h+=`<text x="${cx+14}" y="${cy+1}" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}">${s.nome}</text>`;
-  });
-
-  svg.innerHTML=h;
+function face(p,H){
+ if(H<=0) return {F:0,ycp:0,hw:0,hc:0};
+ const hw=Math.min(H,p.hg), dtop=H-hw, hc=dtop+hw/2, A=p.b*hw;
+ const F=p.rho*G*hc*A;
+ const ycp=hc+(p.b*Math.pow(hw,3)/12)/(hc*A);
+ return {F,ycp,hw,hc,A};
 }
 
-// ================= CARDS + TABELAS =================
-function render(){
-  calcColapso();
-  const tf=estado.tf;
+function calc(p){
+ const o={};
+ const A=p.b*p.hg;
+ const f_m=face(p,p.H1), f_j=face(p,p.H2);
+ o.Fm=f_m.F; o.Fj=f_j.F; o.FH=Math.max(0,f_m.F-f_j.F); o.ycp=f_m.ycp;
 
-  document.getElementById("tfValor").textContent=tf;
-  const tab=TF.includes(tf);
-  const org=document.getElementById("tfOrigem");
-  org.textContent = tab? "valor tabelado" : "extrapolado";
-  org.className = "tag"+(tab?" med":"");
+ // peso e empuxo
+ let t_eq;
+ if(p.pesoModo==='massa'){ o.W=p.massa*G; t_eq=p.massa/(p.rhoAco*A); }
+ else { t_eq=p.esp/1000; o.W=p.rhoAco*A*t_eq*G; }
+ o.tEq=t_eq*1000; o.massa=o.W/G;
+ o.E = p.empuxo ? p.rho*G*(A*t_eq*(p.submFrac/100)) : 0;
+ o.Wef=o.W-o.E;
 
-  document.querySelectorAll(".preset").forEach(b=>b.setAttribute("aria-pressed", String(+b.dataset.tf===tf)));
+ // atritos
+ o.Fg_s=p.muGs*o.FH; o.Fg_r=p.muGr*o.FH;
+ o.Fsel=p.muSeal*(p.preCarga*1000*p.perim);
 
-  // cards
-  let c="";
-  SIFOES.forEach(s=>{
-    const r=dH(s,tf), pMin=s.pEst-r.v, est=classificar(pMin);
-    const mi=michaud(s,tf);
-    c+=`<article class="card ${est.cls}">
-      <h3>${s.nome}</h3>
-      <p class="meta">${s.trecho} · L = ${fmt(s.L,2)} m · risco de vapor abaixo de ${s.tcrit} min</p>
-      <dl class="linhas">
-        <dt>ΔH Hammer</dt><dd>${fmt(r.v)} m</dd>
-        <dt>ΔH Michaud</dt><dd>${fmt(mi)} m</dd>
-        <dt>Razão</dt><dd>${fmt(r.v/mi,1)}×</dd>
-        <dt>P estacionária</dt><dd>${fmt(s.pEst)} mca</dd>
-        <dt>P mínima</dt><dd class="destaque">${pMin>0?"+":""}${fmt(pMin)} mca</dd>
-      </dl>
-      <span class="estado">${est.txt}</span>
-    </article>`;
-  });
-  document.getElementById("cards").innerHTML=c;
+ o.Fup_s=o.Wef+o.Fg_s+o.Fsel;
+ o.Fup_r=o.Wef+o.Fg_r+o.Fsel;
 
-  // tabela tempos mínimos
-  let t1="";
-  SIFOES.forEach(s=>{
-    const tCol=tempoPara(s, s.pEst+estado.pCol);
-    const t0=tempoPara(s, s.pEst);
-    const t1m=tempoPara(s, s.pEst-1);
-    const t2m=tempoPara(s, s.pEst-2);
-    const cel=v=>{
-      if(!isFinite(v)||v<=0) return `<td style="color:${COR.sobre}">inatingível</td>`;
-      const cls = v<=16?"ok" : v<=45?"al":"cr";
-      return `<td><span class="chip ${cls}">${Math.ceil(v)} min</span></td>`;
-    };
-    t1+=`<tr><td class="nome">${s.nome}</td><td>${fmt(s.L,0)}</td><td>${fmt(s.n,3)}</td><td>${fmt(s.r2,4)}</td>
-      ${cel(tCol)}${cel(t0)}${cel(t1m)}${cel(t2m)}</tr>`;
-  });
-  document.querySelector("#tabMin tbody").innerHTML=t1;
+ // fechamento
+ const resist=o.Fg_s+o.Fsel;
+ o.gravFecha = o.Wef>resist;
+ o.Fdown = o.gravFecha ? (o.Wef-resist) : (resist-o.Wef);   // magnitude
+ o.compress = !o.gravFecha;
 
-  // tabela comparativa
-  let t2="";
-  SIFOES.forEach(s=>{
-    const r=dH(s,tf), pMin=s.pEst-r.v, est=classificar(pMin), mi=michaud(s,tf);
-    t2+=`<tr><td class="nome">${s.nome}</td><td>${fmt(mi)}</td><td>${fmt(r.v)}</td><td>${fmt(r.v/mi,1)}×</td>
-      <td>${fmt(s.pEst)}</td><td style="color:${est.chip==="cr"?COR.sobre:est.chip==="al"?COR.vapor:COR.geratriz}">${pMin>0?"+":""}${fmt(pMin)}</td>
-      <td><span class="chip ${est.chip}">${est.txt}</span></td></tr>`;
-  });
-  document.querySelector("#tabComp tbody").innerHTML=t2;
+ // fuso
+ const dm=(p.d-p.p/2)/1000, L=p.entradas*p.p/1000, sec=1/Math.cos(p.alpha);
+ o.dm=dm; o.L=L;
+ o.lead_ang=Math.atan(L/(Math.PI*dm))*180/Math.PI;
+ const den_r=Math.PI*dm-p.muT*L*sec;
+ o.Tr = F => F*dm/2*((L+Math.PI*p.muT*dm*sec)/den_r);
+ o.Tl = F => F*dm/2*((Math.PI*p.muT*dm*sec-L)/(Math.PI*dm+p.muT*L*sec));
+ o.Tc = F => Math.abs(F)*p.muC*(p.dc/1000)/2;
 
-  document.getElementById("pcolapso").innerHTML =
-    `Com e = ${fmt(estado.e*1000,3)} mm e D = 2.500 mm, D/e = ${fmt(D/estado.e,0)}. Colapso do tubo liso a <strong style="color:var(--sobre)">−${fmt(estado.pCol,2)} mca</strong>${estado.reforco>1?` (já com o crédito de ${fmt(estado.reforco,1)}×)`:""}. A vazão de ${fmt(estado.Q,1)} m³/s dá velocidade de ${fmt(estado.V,2)} m/s no tubo de 4,91 m².`;
+ o.selflock = p.muT >= (L*Math.cos(p.alpha))/(Math.PI*dm);
+ o.etaFuso = o.Fup_s>0 ? (o.Fup_s*L)/(2*Math.PI*o.Tr(o.Fup_s)) : 0;
 
-  desenharCurva();
+ o.Trosca_s=o.Tr(o.Fup_s); o.Tesc_s=o.Tc(o.Fup_s); o.Tup_s=o.Trosca_s+o.Tesc_s;
+ o.Trosca_r=o.Tr(o.Fup_r); o.Tesc_r=o.Tc(o.Fup_r); o.Tup_r=o.Trosca_r+o.Tesc_r;
 
-  // anima régua
-  const alvos = SIFOES.map(s=>s.pEst-dH(s,tf).v);
-  if(reduz || !anim[0].ini){
-    anim.forEach((a,i)=>{ a.pMin=alvos[i]; a.ini=true; });
-    desenharRegua();
-  } else {
-    tween(alvos);
-  }
+ if(o.compress){ o.Trosca_d=o.Tr(o.Fdown); }
+ else { o.Trosca_d=Math.abs(o.Tl(o.Fdown)); }
+ o.Tesc_d=o.Tc(o.Fdown); o.Tdown=o.Trosca_d+o.Tesc_d;
+
+ o.Tproj=o.Tup_s*p.FS;
+ o.TprojD=o.Tdown*p.FS;
+
+ // flambagem (só quando há compressão)
+ const dr=(p.d-1.1*p.p)/1000;
+ const I=Math.PI*Math.pow(dr,4)/64;
+ o.Pcr=Math.PI*Math.PI*ESTEEL*I/Math.pow(p.K*p.Lf,2);
+ o.FSflamb = o.compress && o.Fdown>0 ? o.Pcr/o.Fdown : Infinity;
+
+ // motor
+ o.Tmot=o.Tproj/(p.i*p.etaRed);
+ o.Pmec=o.Tmot*2*Math.PI*p.nMot/60;
+
+ // velocidade
+ o.vel=p.hg/p.t60*1000; // mm/s (curso = altura da comporta)
+ return o;
 }
 
-let raf=null;
-function tween(alvos){
-  if(raf) cancelAnimationFrame(raf);
-  const ini=anim.map(a=>a.pMin), t0=performance.now(), dur=340;
-  const passo=now=>{
-    const p=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-p,3);
-    anim.forEach((a,i)=>{ a.pMin=ini[i]+(alvos[i]-ini[i])*e; });
-    desenharRegua();
-    if(p<1) raf=requestAnimationFrame(passo); else raf=null;
-  };
-  raf=requestAnimationFrame(passo);
+function run(){
+ // visibilidade dos campos de peso
+ const modo=document.getElementById('pesoModo').value;
+ document.querySelectorAll('#g-com .f').forEach(el=>{
+   const only=el.dataset.only; el.style.display=(!only||only===modo)?'':'none';});
+ const p=readP(), o=calc(p);
+
+ // hero
+ document.getElementById('heroT').textContent=f0(o.Tproj);
+ const vd=document.getElementById('verdict');
+ let cls,txt;
+ if(o.Tproj<=p.Ttrab*0.85){cls='v-ok';txt='dentro do torque de trabalho';}
+ else if(o.Tproj<=p.Ttrab){cls='v-ok';txt='no limite do torque de trabalho';}
+ else if(o.Tproj<=p.Tmax){cls='v-warn';txt='acima do trabalho, abaixo do máximo';}
+ else {cls='v-bad';txt='excede o torque máximo do atuador';}
+ vd.className=cls; vd.textContent=txt;
+ document.getElementById('heroCap').textContent=
+   `pico de partida ${f0(o.Tup_s)} N·m × FS ${f1(p.FS)} · atuador ${f0(p.Ttrab)}/${f0(p.Tmax)} N·m · margem ${((p.Ttrab/o.Tproj-1)*100).toLocaleString('pt-BR',{maximumFractionDigits:0})}%`;
+
+ const gmax=Math.max(p.Tmax*1.35,o.Tproj*1.12);
+ const pc=x=>Math.min(100,Math.max(0,x/gmax*100));
+ document.getElementById('gz1').style.width=pc(p.Ttrab)+'%';
+ document.getElementById('gz2').style.width=(pc(p.Tmax)-pc(p.Ttrab))+'%';
+ document.getElementById('gz3').style.width=(100-pc(p.Tmax))+'%';
+ const m1=document.getElementById('gm1'),m2=document.getElementById('gm2'),gn=document.getElementById('gn');
+ m1.style.left=pc(p.Ttrab)+'%'; m1.dataset.l=f0(p.Ttrab);
+ m2.style.left=pc(p.Tmax)+'%';  m2.dataset.l=f0(p.Tmax);
+ gn.style.left=pc(o.Tproj)+'%'; gn.className='needle'+(o.Tproj>p.Tmax?' over':'');
+
+ // tabela de forças
+ const kn=x=>x/1000, tf=x=>x/1000/9.80665;
+ const rows=[
+  ['Empuxo hidrostático montante',kn(o.Fm),tf(o.Fm),`resultante a ${f1(o.ycp)} m da superfície`],
+  ['Empuxo hidrostático jusante',-kn(o.Fj),-tf(o.Fj),p.H2>0?'contrapressão':'sem lâmina a jusante'],
+  ['Empuxo hidrostático líquido',kn(o.FH),tf(o.FH),'carga normal sobre guias e sede'],
+  ['Peso próprio',kn(o.W),tf(o.W),`${f0(o.massa)} kg · espessura equiv. ${f1(o.tEq)} mm`],
+  ['Empuxo de Arquimedes',-kn(o.E),-tf(o.E),p.empuxo?f1(o.E/o.W*100)+'% do peso':'desativado'],
+  ['Peso efetivo',kn(o.Wef),tf(o.Wef),''],
+  ['Atrito nas guias (partida)',kn(o.Fg_s),tf(o.Fg_s),`μ ${f1(p.muGs*100)/100}`.replace('.',',')],
+  ['Atrito das vedações',kn(o.Fsel),tf(o.Fsel),`${f1(p.perim)} m × ${f1(p.preCarga)} kN/m × μ ${p.muSeal}`.replace(/\./g,',')]
+ ];
+ let h='';
+ rows.forEach(r=>{h+=`<tr class="${r[0].startsWith('Empuxo hidrostático l')||r[0]==='Peso efetivo'?'sub':''}"><td>${r[0]}</td><td class="num">${f1(r[1])}</td><td class="num">${f1(r[2])}</td><td style="font-size:.76rem;color:var(--ink2)">${r[3]}</td></tr>`;});
+ h+=`<tr class="tot"><td>Força de içamento na partida</td><td class="num">${f1(kn(o.Fup_s))}</td><td class="num">${f1(tf(o.Fup_s))}</td><td style="font-size:.76rem">peso ef. + atrito guias + vedações</td></tr>`;
+ h+=`<tr><td>Força de içamento em regime</td><td class="num">${f1(kn(o.Fup_r))}</td><td class="num">${f1(tf(o.Fup_r))}</td><td style="font-size:.76rem;color:var(--ink2)">μ guias ${p.muGr}</td></tr>`.replace(/(\d),(\d)<\/td><\/tr>/,'$1,$2</td></tr>');
+ document.getElementById('tForcas').innerHTML=h;
+
+ // barra de composição
+ const tot=o.Wef+o.Fg_s+o.Fsel;
+ const seg=[[o.Wef,'var(--ink2)','peso'],[o.Fg_s,'var(--water)','guias'],[o.Fsel,'var(--ochre)','vedação']];
+ document.getElementById('barF').innerHTML=seg.map(s=>{
+   const w=tot>0?s[0]/tot*100:0;
+   return `<div style="width:${w}%;background:${s[1]}">${w>12?f0(w)+'%':''}</div>`;}).join('');
+
+ // torques
+ const tr=(nome,F,Tr_,Tc_,Tt)=>`<tr><td>${nome}</td><td class="num">${f1(F/1000)}</td><td class="num">${f0(Tr_)}</td><td class="num">${f0(Tc_)}</td><td class="num"><b>${f0(Tt)}</b></td><td class="num">${f0(Tt*p.FS)}</td></tr>`;
+ let ht=tr('Abertura — pico de partida',o.Fup_s,o.Trosca_s,o.Tesc_s,o.Tup_s)
+       +tr('Abertura — regime',o.Fup_r,o.Trosca_r,o.Tesc_r,o.Tup_r)
+       +tr(o.compress?'Fechamento — empurrando':'Fechamento — frenando',o.Fdown,o.Trosca_d,o.Tesc_d,o.Tdown);
+ document.getElementById('tTorque').innerHTML=ht;
+
+ // flags
+ const fl=[];
+ fl.push({c:o.selflock?'ok':'bad',t:'Autotravamento do fuso',
+   v:o.selflock?`sim — ângulo de hélice ${f1(o.lead_ang)}°`:`NÃO — ${f1(o.lead_ang)}° com μ ${p.muT}; a comporta pode descer sozinha`});
+ fl.push({c:o.etaFuso>0.30?'ok':(o.etaFuso>0.20?'warn':'bad'),t:'Rendimento do par rosca/porca',
+   v:f1(o.etaFuso*100)+'%'});
+ if(o.compress){
+   const c=o.FSflamb>3?'ok':(o.FSflamb>2?'warn':'bad');
+   fl.push({c:'bad',t:'Fechamento por gravidade',v:`não fecha sozinha — falta ${f1(o.Fdown/1000)} kN, haste em compressão`});
+   fl.push({c:c,t:'Flambagem da haste',v:`Pcr ${f0(o.Pcr/1000)} kN · FS ${f1(o.FSflamb)}`});
+ } else {
+   fl.push({c:'ok',t:'Fechamento por gravidade',v:`sim — sobra ${f1(o.Fdown/1000)} kN, haste tracionada`});
+   fl.push({c:'ok',t:'Flambagem da haste',v:'não aplicável (sem compressão)'});
+ }
+ const marg=(p.Ttrab/o.Tproj-1)*100;
+ fl.push({c:marg>15?'ok':(marg>0?'warn':'bad'),t:'Margem sobre o torque de trabalho',
+   v:(marg>=0?'+':'')+f0(marg)+'%'});
+ fl.push({c:'',t:'Pressão máxima na soleira',v:f1(p.rho*G*p.H1/1000)+' kPa · '+f1(p.H1)+' mca'});
+ document.getElementById('flags').innerHTML=fl.map(f=>
+   `<div class="flag ${f.c}"><div class="t">${f.t}</div><div class="v">${f.v}</div></div>`).join('');
+
+ // motor
+ document.getElementById('tMotor').innerHTML=`
+  <tr><td>Torque de projeto no fuso</td><td class="num">${f0(o.Tproj)} N·m</td></tr>
+  <tr><td>Torque requerido no eixo do motor</td><td class="num">${f1(o.Tmot)} N·m</td></tr>
+  <tr><td>Potência mecânica requerida</td><td class="num">${f1(o.Pmec/1000)} kW</td></tr>
+  <tr><td>Corrente estimada (380 V, cosφ 0,82, η 0,85)</td><td class="num">${f1(o.Pmec/(0.85*Math.sqrt(3)*380*0.82))} A</td></tr>
+  <tr><td>Relação × rendimento do redutor</td><td class="num">${f0(p.i)}:1 × ${f1(p.etaRed*100)}%</td></tr>`;
+
+ draw3D(p,o);
+ charts(p,o);
+ vfd(p,o);
+ runTr(); runEn(); runCv();
 }
 
-// ---- eventos ----
-document.getElementById("tf").addEventListener("input",e=>{ estado.tf=+e.target.value; render(); });
-document.querySelectorAll(".preset").forEach(b=>b.addEventListener("click",()=>{
-  estado.tf=+b.dataset.tf; document.getElementById("tf").value=estado.tf; render();
-}));
-document.getElementById("vazao").addEventListener("input",e=>{
-  estado.Q=+e.target.value; estado.V=estado.Q/AREA;
-  document.getElementById("vazaoOut").textContent=fmt(estado.Q,1)+" m³/s"; render();
-});
-document.getElementById("esp").addEventListener("input",e=>{
-  estado.e=+e.target.value/1000;
-  document.getElementById("espOut").textContent=fmt(+e.target.value,3)+" mm"; render();
-});
-document.getElementById("reforco").addEventListener("input",e=>{
-  estado.reforco=+e.target.value;
-  document.getElementById("reforcoOut").textContent=fmt(estado.reforco,1)+"×"; render();
-});
-document.getElementById("criterio").addEventListener("input",e=>{
-  estado.criterio=+e.target.value;
-  document.getElementById("criterioOut").textContent=fmt(estado.criterio,1)+" mca"; render();
-});
+/* ---------- cena isométrica paramétrica + atuador do render ---------- */
+const CX=0.881, CY=0.475;                 // eixos do render original
+const ACT_SRC="data:image/webp;base64,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";
+const ACT_W=214, ACT_H=167, ACT_AX=0.682, ACT_PXM=116.5;
 
-// ---- abas ----
-const abas = [
-  {btn:document.getElementById("abaSim"), view:document.getElementById("viewSim")},
-  {btn:document.getElementById("abaAud"), view:document.getElementById("viewAud")}
-];
-abas.forEach((a,i)=>a.btn.addEventListener("click",()=>{
-  abas.forEach((b,j)=>{
-    b.btn.setAttribute("aria-selected", String(i===j));
-    b.view.hidden = i!==j;
-  });
-  if(i===0){ desenharCurva(); desenharRegua(); }
-  window.scrollTo({top:0, behavior: reduz?"auto":"smooth"});
-}));
+function draw3D(p,o){
+ const el=document.getElementById('scene'); if(!el) return;
+ const VW=1024, VH=744, pad=54;
+ const b=p.b, hg=p.hg, H1=Math.max(0,p.H1), H2=Math.max(0,Math.min(p.H2,hg*1.5));
+ const Lu=Math.max(hg*1.30,b*0.95,1.4), Ld=Math.max(hg*0.90,b*0.65,1.1);
+ const wallH=Math.max(hg*1.12,H1*1.04);
+ const tw=Math.max(0.14,Math.min(b,hg)*0.09), th=Math.max(0.18,tw*1.2);
+ const deck=wallH+Math.max(0.12,hg*0.05);
+ const gt=Math.max(0.06,hg*0.04);
+ const actW=Math.min(2.0,Math.max(0.75,ACT_W/ACT_PXM)), actHm=actW*ACT_H/ACT_W;
+ const dxb=Ld*0.42, dyh=b+Math.max(0.55,b*0.26), dxa=-Lu-tw-0.32;
 
-render();
+ const ext=[[-Lu-tw,-tw,-th],[Ld+tw,-tw,0],[Ld+tw,b+tw,0],[dxb,b+tw,0],
+   [-Lu-tw,b+tw,-th],[-Lu-tw,-tw,wallH],[Ld+tw,b+tw,wallH],
+   [0,b/2,deck+actHm],[dxa,dyh,Math.max(H1,0.1)],[0.25,dyh,hg],[Ld+tw+0.40,dyh,0]];
+ let a1=1e9,a2=-1e9,a3=1e9,a4=-1e9;
+ ext.forEach(q=>{const u=(q[0]-q[1])*CX, v=(q[0]+q[1])*CY-q[2];
+  a1=Math.min(a1,u);a2=Math.max(a2,u);a3=Math.min(a3,v);a4=Math.max(a4,v);});
+ const k=Math.min((VW-2*pad)/(a2-a1),(VH-2*pad)/(a4-a3));
+ const ox=pad-a1*k+((VW-2*pad)-(a2-a1)*k)/2, oy=pad-a3*k;
+ const S=(x,y,z)=>[((x-y)*CX)*k+ox, (((x+y)*CY)-z)*k+oy];
+ const pt=q=>{const s=S(q[0],q[1],q[2]);return s[0].toFixed(1)+','+s[1].toFixed(1);};
+ const F=(a,fill,st)=>`<polygon points="${a.map(pt).join(' ')}" fill="${fill}"${st?` stroke="${st}" stroke-width="1.1" stroke-linejoin="round"`:''}/>`;
+ const MONO='ui-monospace,Menlo,monospace';
+ const ed='rgba(0,0,0,.30)';
+
+ let g=`<defs>
+  <linearGradient id="wT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8AC6E0" stop-opacity=".62"/><stop offset="1" stop-color="#3A82A8" stop-opacity=".50"/></linearGradient>
+  <linearGradient id="wS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5FA3C4" stop-opacity=".58"/><stop offset="1" stop-color="#1B5578" stop-opacity=".76"/></linearGradient>
+  <linearGradient id="mt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C6D4DE"/><stop offset="1" stop-color="#54687A"/></linearGradient>
+  <linearGradient id="mt2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#93A7B7"/><stop offset="1" stop-color="#3B4E5E"/></linearGradient>
+  <marker id="dm" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#E9EEF2"/></marker>
+  <marker id="fh" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#FF7A5F"/></marker>
+ </defs>`;
+
+ // laje de fundo
+ g+=F([[-Lu-tw,-tw,0],[Ld+tw,-tw,0],[Ld+tw,b+tw,0],[-Lu-tw,b+tw,0]],'#413D35',ed);
+ g+=F([[-Lu-tw,b+tw,0],[Ld+tw,b+tw,0],[Ld+tw,b+tw,-th],[-Lu-tw,b+tw,-th]],'#6E6A5E',ed);
+ g+=F([[Ld+tw,-tw,0],[Ld+tw,b+tw,0],[Ld+tw,b+tw,-th],[Ld+tw,-tw,-th]],'#4C463D',ed);
+ // paredes
+ g+=F([[-Lu,0,0],[Ld,0,0],[Ld,0,wallH],[-Lu,0,wallH]],'#575247',ed);
+ g+=F([[-Lu-tw,-tw,wallH],[Ld+tw,-tw,wallH],[Ld+tw,0,wallH],[-Lu-tw,0,wallH]],'#A8A392',ed);
+ g+=F([[-Lu,0,0],[-Lu,b,0],[-Lu,b,wallH],[-Lu,0,wallH]],'#4C463D',ed);
+ g+=F([[-Lu-tw,-tw,wallH],[-Lu,-tw,wallH],[-Lu,b+tw,wallH],[-Lu-tw,b+tw,wallH]],'#9E9989',ed);
+ g+=F([[Ld,0,0],[Ld,b,0],[Ld,b,wallH],[Ld,0,wallH]],'#514C42',ed);
+ g+=F([[Ld,-tw,wallH],[Ld+tw,-tw,wallH],[Ld+tw,b+tw,wallH],[Ld,b+tw,wallH]],'#9E9989',ed);
+ // seções da parede removida (efeito de corte)
+ g+=F([[-Lu,b,0],[-Lu,b+tw,0],[-Lu,b+tw,wallH],[-Lu,b,wallH]],'#8E8878',ed);
+ g+=F([[Ld,b,0],[Ld,b+tw,0],[Ld,b+tw,wallH],[Ld,b,wallH]],'#8E8878',ed);
+ // água
+ if(H1>0.02){
+  g+=F([[-Lu,b,0],[0,b,0],[0,b,H1],[-Lu,b,H1]],'url(#wS)','rgba(160,220,245,.35)');
+  g+=F([[-Lu,0,H1],[0,0,H1],[0,b,H1],[-Lu,b,H1]],'url(#wT)','rgba(160,220,245,.55)');
+ }
+ if(H2>0.02){
+  g+=F([[0,b,0],[Ld,b,0],[Ld,b,H2],[0,b,H2]],'url(#wS)','rgba(160,220,245,.3)');
+  g+=F([[0,0,H2],[Ld,0,H2],[Ld,b,H2],[0,b,H2]],'url(#wT)','rgba(160,220,245,.5)');
+ }
+ // guias
+ [[0,'#41525F'],[b,'#6E8494']].forEach(q=>
+  g+=F([[-gt*2.4,q[0],0],[gt*1.2,q[0],0],[gt*1.2,q[0],wallH],[-gt*2.4,q[0],wallH]],q[1],ed));
+ // tabuleiro
+ g+=F([[0,0,0],[0,b,0],[0,b,hg],[0,0,hg]],'url(#mt2)',ed);
+ g+=F([[-gt,b,0],[0,b,0],[0,b,hg],[-gt,b,hg]],'url(#mt)',ed);
+ g+=F([[-gt,0,hg],[0,0,hg],[0,b,hg],[-gt,b,hg]],'#AFC2CF',ed);
+ for(let i=1;i<=3;i++){const z=hg*i/4, e=Math.max(.03,hg*.022);
+  g+=F([[0.012,0,z-e],[0.012,b,z-e],[0.012,b,z+e],[0.012,0,z+e]],'#8AA0B2','rgba(0,0,0,.25)');}
+ // passadiço
+ const dkw=Math.max(0.26,actW*0.24);
+ g+=F([[-dkw,0,wallH],[dkw,0,wallH],[dkw,b,wallH],[-dkw,b,wallH]],'#8E8878',ed);
+ g+=F([[-dkw,b,wallH],[dkw,b,wallH],[dkw,b,wallH-tw*0.8],[-dkw,b,wallH-tw*0.8]],'#6E6A5E',ed);
+ // haste
+ const sw=Math.max(0.028,b*0.014), sxp=-gt/2, syp=b/2;
+ g+=F([[sxp,syp-sw,hg],[sxp,syp+sw,hg],[sxp,syp+sw,deck],[sxp,syp-sw,deck]],'url(#mt)','rgba(0,0,0,.3)');
+ for(let z=hg+0.05;z<deck;z+=Math.max(0.05,hg*0.035)){
+  const q1=S(sxp,syp-sw,z), q2=S(sxp,syp+sw,z+0.02);
+  g+=`<line x1="${q1[0].toFixed(1)}" y1="${q1[1].toFixed(1)}" x2="${q2[0].toFixed(1)}" y2="${q2[1].toFixed(1)}" stroke="rgba(20,35,48,.45)" stroke-width="1.1"/>`;}
+ // atuador (recorte do render)
+ const an=S(sxp,syp,deck), aw=actW*k, ah=actHm*k;
+ g+=`<image href="${ACT_SRC}" x="${(an[0]-ACT_AX*aw).toFixed(1)}" y="${(an[1]-ah).toFixed(1)}" width="${aw.toFixed(1)}" height="${ah.toFixed(1)}"/>`;
+
+ // resultante hidrostática
+ if(H1>0.02&&o.FH>0){
+  const zc=Math.max(0.04,H1-o.ycp), q2=S(-gt*1.6,syp,zc), q1=S(-Math.min(Lu*0.78,hg*0.92)-gt,syp,zc);
+  g+=`<line x1="${q1[0].toFixed(1)}" y1="${q1[1].toFixed(1)}" x2="${q2[0].toFixed(1)}" y2="${q2[1].toFixed(1)}" stroke="#FF7A5F" stroke-width="4.2" marker-end="url(#fh)"/>`;
+  const fx=q1[0]-12, fy=q1[1]+18;
+  g+=`<text x="${fx.toFixed(1)}" y="${fy.toFixed(1)}" font-size="23" font-weight="650" fill="#FF7A5F" text-anchor="end" stroke="rgba(8,18,28,.85)" stroke-width="5" paint-order="stroke" font-family="${MONO}">F = ${f1(o.FH/1000)} kN</text>`;
+  g+=`<text x="${fx.toFixed(1)}" y="${(fy+21).toFixed(1)}" font-size="18" fill="#CFE0EC" text-anchor="end" stroke="rgba(8,18,28,.85)" stroke-width="4.5" paint-order="stroke" font-family="${MONO}">CP a ${f1(o.ycp)} m do NA</text>`;
+ }
+
+ // cotas
+ const DIM=(A,B,txt,col)=>{const q1=S(A[0],A[1],A[2]), q2=S(B[0],B[1],B[2]);
+  const dx=q2[0]-q1[0], dy=q2[1]-q1[1], Lp=Math.hypot(dx,dy)||1;
+  let nx=-dy/Lp, ny=dx/Lp; if(ny>0){nx=-nx;ny=-ny;}
+  const mx=(q1[0]+q2[0])/2+nx*19, my=(q1[1]+q2[1])/2+ny*19+6;
+  return `<line x1="${q1[0].toFixed(1)}" y1="${q1[1].toFixed(1)}" x2="${q2[0].toFixed(1)}" y2="${q2[1].toFixed(1)}" stroke="${col}" stroke-width="1.8" marker-start="url(#dm)" marker-end="url(#dm)"/>`
+   +`<text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" font-size="20" fill="${col}" text-anchor="middle" stroke="rgba(8,18,28,.85)" stroke-width="5" paint-order="stroke" font-family="${MONO}">${txt}</text>`;};
+ const EXT=(A,B)=>{const q1=S(A[0],A[1],A[2]), q2=S(B[0],B[1],B[2]);
+  return `<line x1="${q1[0].toFixed(1)}" y1="${q1[1].toFixed(1)}" x2="${q2[0].toFixed(1)}" y2="${q2[1].toFixed(1)}" stroke="rgba(233,238,242,.35)" stroke-width="1" stroke-dasharray="5 4"/>`;};
+ g+=EXT([0,0,0],[dxb,0,0])+EXT([0,b,0],[dxb,b,0]);
+ g+=DIM([dxb,0,0],[dxb,b,0],`b = ${f1(b)} m`,'#E9EEF2');
+ g+=EXT([0,b,hg],[0.25,dyh,hg])+EXT([0,b,0],[0.25,dyh,0]);
+ g+=DIM([0.25,dyh,0],[0.25,dyh,hg],`h = ${f1(hg)} m`,'#E9EEF2');
+ if(H1>0.02){
+  g+=EXT([-Lu,b,H1],[dxa,dyh,H1])+EXT([-Lu,b,0],[dxa,dyh,0]);
+  g+=DIM([dxa,dyh,0],[dxa,dyh,H1],`NA ${f1(H1)} m`,'#8FDCF7');
+ }
+ if(H2>0.02){
+  g+=EXT([Ld,b,H2],[Ld+tw+0.40,dyh,H2])+EXT([Ld,b,0],[Ld+tw+0.40,dyh,0]);
+  g+=DIM([Ld+tw+0.40,dyh,0],[Ld+tw+0.40,dyh,H2],`${f1(H2)} m`,'#8FDCF7');
+ }
+
+ // painel de leitura
+ const rows=[['lâmina montante',f1(p.H1)+' m'],['empuxo líquido',f1(o.FH/1000)+' kN'],
+             ['içamento na partida',f1(o.Fup_s/1000)+' kN'],['torque de projeto',f0(o.Tproj)+' N·m']];
+ const marg=(p.Ttrab/o.Tproj-1)*100;
+ const cor=o.Tproj<=p.Ttrab?'#6FCB98':(o.Tproj<=p.Tmax?'#E5B45A':'#E7705A');
+ g+=`<rect x="24" y="${VH-214}" width="332" height="196" rx="16" fill="rgba(8,20,32,.80)" stroke="rgba(255,255,255,.22)"/>`;
+ rows.forEach((r,i)=>{const y=VH-176+i*35;
+  g+=`<text x="44" y="${y}" font-size="18" fill="#A6BCCC" font-family="${MONO}">${r[0]}</text>`;
+  g+=`<text x="336" y="${y}" font-size="20" fill="${i===3?cor:'#EAF1F6'}" text-anchor="end" font-weight="650" font-family="${MONO}">${r[1]}</text>`;});
+ g+=`<text x="44" y="${VH-34}" font-size="16" fill="${cor}" font-family="${MONO}">margem sobre ${f0(p.Ttrab)} N·m: ${(marg>=0?'+':'')+f0(marg)}%</text>`;
+ el.setAttribute('viewBox',`0 0 ${VW} ${VH}`);
+ el.innerHTML=g;
+}
+function lineChart(el,xs,ys,xlab,ylab,lims,curX){
+ const W=520,H=210,ml=48,mr=12,mt=12,mb=30;
+ const ymax=Math.max(...ys,...(lims||[]).map(l=>l.y))*1.1;
+ const xmin=xs[0],xmax=xs[xs.length-1];
+ const X=v=>ml+(v-xmin)/(xmax-xmin)*(W-ml-mr);
+ const Y=v=>H-mb-(v/ymax)*(H-mt-mb);
+ let s=`<line class="ax" x1="${ml}" y1="${mt}" x2="${ml}" y2="${H-mb}"/><line class="ax" x1="${ml}" y1="${H-mb}" x2="${W-mr}" y2="${H-mb}"/>`;
+ for(let i=0;i<=4;i++){const v=ymax*i/4;
+   s+=`<line class="gr" x1="${ml}" y1="${Y(v)}" x2="${W-mr}" y2="${Y(v)}"/><text x="${ml-5}" y="${Y(v)+3}" text-anchor="end">${f0(v)}</text>`;}
+ for(let i=0;i<=5;i++){const v=xmin+(xmax-xmin)*i/5;
+   s+=`<text x="${X(v)}" y="${H-mb+14}" text-anchor="middle">${fmt(v,2)}</text>`;}
+ (lims||[]).forEach(l=>{s+=`<line class="${l.c}" x1="${ml}" y1="${Y(l.y)}" x2="${W-mr}" y2="${Y(l.y)}"/>`;});
+ if(curX!==undefined&&curX>=xmin&&curX<=xmax) s+=`<line class="cur" x1="${X(curX)}" y1="${mt}" x2="${X(curX)}" y2="${H-mb}"/>`;
+ s+=`<path class="ln" d="${xs.map((x,i)=>(i?'L':'M')+X(x).toFixed(1)+' '+Y(ys[i]).toFixed(1)).join(' ')}"/>`;
+ s+=`<text x="${(W+ml)/2}" y="${H-4}" text-anchor="middle">${xlab}</text>`;
+ s+=`<text x="12" y="${(H)/2}" text-anchor="middle" transform="rotate(-90 12 ${H/2})">${ylab}</text>`;
+ el.innerHTML=s;
+}
+function charts(p,o){
+ const lims=[{y:p.Tmax,c:'lim'},{y:p.Ttrab,c:'lim2'}];
+ let xs=[],ys=[];
+ for(let m=0.05;m<=0.701;m+=0.025){const q=Object.assign({},p,{muGs:m});xs.push(m);ys.push(calc(q).Tproj);}
+ lineChart(document.getElementById('chMu'),xs,ys,'μ das guias na partida','T projeto (N·m)',lims,p.muGs);
+ xs=[];ys=[];
+ const hmax=Math.max(p.hg*1.4,p.H1*1.1);
+ for(let i=0;i<=30;i++){const h=hmax*i/30;const q=Object.assign({},p,{H1:h});xs.push(h);ys.push(calc(q).Tproj);}
+ lineChart(document.getElementById('chH'),xs,ys,'lâmina a montante (m)','T projeto (N·m)',lims,p.H1);
+}
+
+/* ---------- tabela VFD ---------- */
+function vfd(p,o){
+ const fs=[60,50,45,40,30,25,20];
+ document.getElementById('tVfd').innerHTML=fs.map(f=>{
+  const t=p.t60*60/f, v=p.hg*1000/t;
+  return `<tr><td>${f} Hz</td><td class="num">${f1(v)}</td><td class="num">${f0(t)}</td><td class="num">${f1(t/60)}</td></tr>`;}).join('');
+}
+
+/* ---------- solver reverso ---------- */
+const SVMETA={massa:{lab:'massa da comporta',u:'kg',lo:10,hi:60000},
+ H1:{lab:'lâmina a montante',u:'m',lo:0,hi:30},
+ muGs:{lab:'μ das guias na partida',u:'',lo:0.01,hi:1.5},
+ p:{lab:'passo do fuso',u:'mm',lo:1,hi:60},
+ muT:{lab:'μ rosca/porca',u:'',lo:0.01,hi:0.6},
+ b:{lab:'largura da comporta',u:'m',lo:0.1,hi:30},
+ preCarga:{lab:'pré-carga da vedação',u:'kN/m',lo:0,hi:60}};
+function solve(){
+ const key=document.getElementById('svVar').value;
+ const alvo=parseFloat(document.getElementById('svAlvo').value);
+ const meta=SVMETA[key], base=readP(), out=document.getElementById('solverOut');
+ if(!(alvo>0)){out.textContent='Informe um torque alvo maior que zero.';return;}
+ const F=x=>{const q=Object.assign({},base);q[key]=x;
+   if(key==='massa')q.pesoModo='massa';
+   return calc(q).Tproj-alvo;};
+ let lo=meta.lo,hi=meta.hi,flo=F(lo),fhi=F(hi);
+ if(flo>0){out.innerHTML=`Mesmo no menor valor possível (${fmt(lo)} ${meta.u}) o torque fica em <b>${f0(F(lo)+alvo)} N·m</b>, acima do alvo. Ajuste outro parâmetro — fuso, atrito ou fator de serviço.`;return;}
+ if(fhi<0){out.innerHTML=`Em todo o intervalo testado (até ${fmt(hi)} ${meta.u}) o torque permanece abaixo de ${f0(alvo)} N·m. Não há limite prático nesta variável para as demais condições atuais.`;return;}
+ for(let i=0;i<80;i++){const mid=(lo+hi)/2; (F(mid)<0?lo=mid:hi=mid);}
+ const x=(lo+hi)/2;
+ const q=Object.assign({},base);q[key]=x; if(key==='massa')q.pesoModo='massa';
+ const oc=calc(q);
+ out.innerHTML=`Limite: <b>${fmt(x)} ${meta.u}</b> de ${meta.lab}.<br>
+  <span style="font-size:.8rem;color:var(--ink2)">Nesse ponto: força de içamento ${f1(oc.Fup_s/1000)} kN · torque no fuso ${f0(oc.Tup_s)} N·m · com FS ${f0(oc.Tproj)} N·m · motor ${f1(oc.Tmot)} N·m.</span>`;
+}
+
+/* ============ presets de terceiro — NT EIX-L4.GRL-REL-TEX-NTC-001-R00 ============ */
+const NT_T=[1,2,3,4,5,6,7,8,9,10,15,16];
+const SIFOES={
+ 'Boa Vista'  :{L:2065.95,Hs:2.21,amp:4.3,tc:4,pmin8:-3.80,pmax8:4.11,H:[88.74,40.64,21.88,14.11,10.33,8.21,6.90,6.03,5.41,4.95,3.75,3.39]},
+ 'Mão Ruiva'  :{L:1123.08,Hs:2.24,amp:3.2,tc:2,pmin8:-0.35,pmax8:2.60,H:[44.43,14.56,7.69,5.20,4.00,3.32,2.89,2.59,2.38,2.22,1.79,1.68]},
+ 'Melancias'  :{L:1160.86,Hs:2.17,amp:3.5,tc:2,pmin8:-0.53,pmax8:2.59,H:[46.89,15.50,8.16,5.49,4.21,3.48,3.02,2.71,2.48,2.31,1.85,1.74]},
+ 'Pirangi'    :{L:566.81 ,Hs:1.80,amp:2.7,tc:1,pmin8: 0.67,pmax8:1.81,H:[14.76,4.67,2.70,1.97,1.60,1.38,1.24,1.14,1.07,1.01,0.85,0.82]},
+ 'Serrote'    :{L:1826.74,Hs:1.81,amp:4.0,tc:3,pmin8:-3.27,pmax8:3.21,H:[80.12,33.61,17.77,11.52,8.52,6.84,5.80,5.10,4.60,4.23,3.26,2.98]},
+ 'Juazeirinho':{L:860.53 ,Hs:1.82,amp:3.0,tc:1,pmin8:-0.01,pmax8:1.96,H:[29.69,9.23,5.01,3.48,2.73,2.31,2.03,1.84,1.70,1.60,1.31,1.25]}
+};
+function ntAtivo(){const el=document.getElementById('sifaoPreset');
+ return el && SIFOES[el.value] ? SIFOES[el.value] : null;}
+function ntDH(s,t){                       // interpola os valores tabelados de terceiro
+ if(!s) return null;
+ if(t<=NT_T[0]||t>NT_T[NT_T.length-1]) return null;
+ for(let i=1;i<NT_T.length;i++){ if(t<=NT_T[i]){
+   const f=(t-NT_T[i-1])/(NT_T[i]-NT_T[i-1]);
+   return s.H[i-1]+f*(s.H[i]-s.H[i-1]); } }
+ return null;}
+const PATM=10.33, PVAP=0.24;
+
+function setField(id,val){
+ const r=document.getElementById('r_'+id); if(!r) return;
+ const d=DEFS.find(x=>x.id===id);
+ val=Math.min(d.max,Math.max(d.min,val));
+ r.value=val; document.getElementById('n_'+id).value=val; S[id]=val;
+ document.getElementById('v_'+id).textContent=fmt(val)+(d.u?' '+d.u:'');
+}
+function aplicaPreset(){
+ const k=document.getElementById('sifaoPreset').value; if(k==='custom') return;
+ const s=SIFOES[k]; setField('Lsif',s.L); setField('Hs',s.Hs); setField('ampl',s.amp);
+}
+
+/* ---------------- TRANSIENTE ---------------- */
+function calcTr(o){
+ const g=9.80665, rho=1000;
+ const K=S.Kagua*1e9, E=S.Eaco*1e9, D=S.Dsif, e=S.esp_t/1000;
+ const a=Math.sqrt((K/rho)/(1+(K/E)*(D/e)*S.c1));
+ const A=Math.PI*D*D/4, V=S.Qsif/A, tc=2*S.Lsif/a;
+ const tfs=(o&&o.tf!==undefined?o.tf:S.tf)*60;
+ const amp=(o&&o.amp!==undefined?o.amp:S.ampl);
+ const dHj=a*V/g;
+ const dHm= tfs>tc ? 2*S.Lsif*V/(g*tfs) : dHj;
+ const dHa=Math.min(dHm*amp,dHj);
+ const pmin=S.Hs-dHa, pabs=PATM+pmin;
+ const nu=0.3, pcr=2*E/(1-nu*nu)*Math.pow(e/D,3), pcrM=pcr/(rho*g);
+ const FS = pmin<0 ? pcrM/Math.abs(pmin) : Infinity;
+ const dHall=S.Hs-S.plim;
+ const tmin = dHall>0 ? 2*S.Lsif*V*amp/(g*dHall)/60 : Infinity;
+ const dHcol=S.Hs+pcrM;                       // ΔH que atinge a carga de colapso
+ const tcol = 2*S.Lsif*V*amp/(g*dHcol)/60;
+ return {a,A,V,tc,dHj,dHm,dHa,pmin,pabs,cav:pabs<=PVAP,pcr,pcrM,FS,tmin,dHcol,tcol,DsE:D/e};
+}
+function calcVent(Qar,dp){
+ const k=1.4,R=287,T0=S.Tar+273.15,p0=101325;
+ const pi=Math.max(1000,p0-dp*1e5), r=pi/p0;
+ const rc=Math.pow(2/(k+1),k/(k-1));
+ const phi = r>rc ? Math.sqrt(2*k/((k-1)*R*T0)*(Math.pow(r,2/k)-Math.pow(r,(k+1)/k)))
+                  : Math.sqrt(k/(R*T0))*Math.pow(2/(k+1),(k+1)/(2*(k-1)));
+ const rhoAr=p0/(R*T0), mdot=Qar*rhoAr;
+ const Aor=mdot/(S.CdV*p0*phi), d=Math.sqrt(4*Aor/Math.PI)*1000;
+ return {d,Aor,crit:r<=rc,rhoAr,mdot,r,rc};
+}
+const DNS=[50,80,100,150,200,250,300,400,500,600,800];
+const dnCom=d=>DNS.find(x=>x>=d)||'>800';
+
+function runTr(){
+ if(!document.getElementById('tCel')) return;
+ const t=calcTr(), g=9.80665, sif=ntAtivo(), ntv=ntDH(sif,S.tf);
+ document.getElementById('tCel').innerHTML=`
+  <tr><td>Celeridade da onda</td><td class="num">${f1(t.a)} m/s</td></tr>
+  <tr><td>Velocidade média do escoamento</td><td class="num">${f1(t.V)} m/s</td></tr>
+  <tr><td>Tempo crítico 2L/a</td><td class="num">${f1(t.tc)} s</td></tr>
+  <tr><td>Relação D/e</td><td class="num">${f0(t.DsE)}</td></tr>
+  <tr><td>Teto de Joukowsky (a·V/g)</td><td class="num">${f1(t.dHj)} mca</td></tr>`;
+
+ const sit = t.pmin>=0 ? ['ok','pressão positiva'] : (t.FS>=2?['warn','subpressão dentro da casca']:['bad','subpressão acima da capacidade da casca']);
+ document.getElementById('tTrans').innerHTML=`
+  <tr><td>ΔH analítico (Michaud)</td><td class="num">${f1(t.dHm)} m</td></tr>
+  <tr><td>ΔH com amplificação ${f1(S.ampl)}×</td><td class="num"><b>${f1(t.dHa)} m</b></td></tr>
+  <tr><td>Pressão estacionária de referência</td><td class="num">${f1(S.Hs)} mca</td></tr>
+  <tr><td>Pressão mínima na face de jusante</td><td class="num ${sit[0]}"><b>${f1(t.pmin)} mca</b></td></tr>
+  <tr><td>Pressão absoluta correspondente</td><td class="num">${f1(t.pabs)} mca abs</td></tr>
+  <tr><td>Carga crítica de colapso da casca</td><td class="num">${f1(t.pcrM)} mca · ${f1(t.pcr/1000)} kPa</td></tr>`
+  +(ntv!==null?`<tr class="sub"><td>ΔH tabelado por terceiro (Hammer, NT)<span class="src">dado de terceiro</span></td><td class="num">${f1(ntv)} m → p mín. ${f1(S.Hs-ntv)} mca</td></tr>`:'');
+
+ const fl=[];
+ fl.push({c:t.cav?'bad':'ok',t:'Cavitação junto à comporta',
+   v:t.cav?`sim — p abs ${f1(t.pabs)} < ${PVAP} mca de vapor`:`não — folga de ${f1(t.pabs-PVAP)} mca`});
+ fl.push({c:t.pmin>=0?'ok':(t.FS>=3?'ok':(t.FS>=1.5?'warn':'bad')),t:'Colapso da casca cilíndrica',
+   v: t.pmin>=0?'não aplicável (sem subpressão)':`FS ${f1(t.FS)} · p_cr ${f1(t.pcrM)} mca`});
+ fl.push({c:'',t:`Tempo mínimo para p ≥ ${f1(S.plim)} mca`,
+   v: isFinite(t.tmin)?`${f1(t.tmin)} min`:'indeterminado'});
+ fl.push({c:'',t:'Tempo mínimo para não atingir p_cr',v:`${f1(t.tcol)} min`});
+ document.getElementById('flagsTr').innerHTML=fl.map(x=>
+  `<div class="flag ${x.c}"><div class="t">${x.t}</div><div class="v">${x.v}</div></div>`).join('');
+
+ // envoltória
+ const xs=[],ys=[];
+ for(let m=1;m<=40;m++){xs.push(m);ys.push(calcTr({tf:m}).dHa);}
+ lineChart(document.getElementById('chTr'),xs,ys,'tempo de fechamento (min)','ΔH aplicado (m)',
+   [{y:t.dHcol,c:'lim'},{y:S.Hs,c:'lim2'}],S.tf);
+
+ // tabela
+ let ht='';
+ [1,2,3,4,5,6,8,10,12,16,20,25,30,40].forEach(m=>{
+  const r=calcTr({tf:m}), pa=PATM+r.pmin, nv=ntDH(sif,m);
+  let cls,txt;
+  if(pa<=PVAP){cls='bad';txt='cavitação';}
+  else if(r.pmin<0 && r.pcrM/Math.abs(r.pmin)<1.5){cls='bad';txt='risco de colapso';}
+  else if(r.pmin<0){cls='warn';txt='subpressão';}
+  else {cls='ok';txt='positiva';}
+  ht+=`<tr${m===Math.round(S.tf)?' class="tot"':''}><td>${m} min</td><td class="num">${f1(r.dHm)}</td>
+    <td class="num">${f1(r.dHa)}</td><td class="num">${nv!==null?f1(nv):'—'}</td><td class="num ${cls}">${f1(r.pmin)}</td><td class="${cls}">${txt}</td></tr>`;});
+ document.getElementById('tTrTab').innerHTML=ht;
+
+ // ventosa
+ const fv=document.getElementById('funcVent').value;
+ const v=calcVent(S.Qar,S.dpV);
+ document.getElementById('tVent').innerHTML=`
+  <tr><td>Massa específica do ar admitido</td><td class="num">${f1(v.rhoAr)} kg/m³</td></tr>
+  <tr><td>Vazão mássica requerida</td><td class="num">${f1(v.mdot)} kg/s</td></tr>
+  <tr><td>Razão de pressões p_int/p₀</td><td class="num">${f1(v.r*100)}% ${v.crit?'— regime crítico':'— subsônico'}</td></tr>
+  <tr><td>Área de orifício necessária</td><td class="num">${f1(v.Aor*1e4)} cm²</td></tr>
+  <tr><td>Diâmetro equivalente de orifício</td><td class="num"><b>${f0(v.d)} mm</b></td></tr>
+  <tr><td>Diâmetro nominal sugerido</td><td class="num">DN ${dnCom(v.d)}</td></tr>`;
+ const notas={anti:'Anti-vácuo: dimensionada para admitir ar na taxa de formação do vazio, impedindo que a subpressão atinja a carga de colapso. É o corpo grande da ventosa tríplice função.',
+   cin:'Cinética: expulsa grande volume de ar durante o enchimento. O diferencial admissível deve ser baixo para não acelerar a coluna e provocar reencontro violento.',
+   auto:'Automática: purga o ar que se desprende em operação normal. Orifício pequeno, opera sob pressão de serviço, e não substitui as outras duas funções.'};
+ document.getElementById('ventNote').textContent=notas[fv];
+
+ // alternativas
+ const alt=[
+  ['Ventosa anti-vácuo','subpressão e colapso da casca','Direta e barata. Exige ponto alto acessível e manutenção periódica — ventosa emperrada é pior que ausente.'],
+  ['Manobra lenta / perfil de fechamento','subpressão e sobrepressão','Custo zero. Eficaz porque ΔH é inversamente proporcional ao tempo efetivo. Depende do acionamento permitir.'],
+  ['Chaminé de equilíbrio','ambos, com resposta imediata','Muito eficaz, mas a altura útil é ditada pela linha piezométrica. Obra civil relevante.'],
+  ['Tanque unidirecional (TAU)','subpressão localizada','Adequado a ponto alto isolado. Requer reservatório elevado e válvula de retenção confiável.'],
+  ['Reservatório hidropneumático','sobrepressão e subpressão','Sobredimensionado para carga motriz de poucos mca. Custo e manutenção não se justificam aqui.'],
+  ['By-pass com retenção','subpressão por separação','Simples, mas só atua no sentido de reequilíbrio; não resolve cavitação junto à comporta.']
+ ];
+ document.getElementById('tProt').innerHTML=alt.map(r=>
+  `<tr><td>${r[0]}</td><td style="font-size:.8rem">${r[1]}</td><td style="font-size:.8rem;color:var(--ink2)">${r[2]}</td></tr>`).join('');
+ const cc=document.getElementById('protCall');
+ if(t.pmin<0){
+  cc.className='callout warn';
+  cc.innerHTML=`Com carga motriz de <b>${f1(S.Hs)} mca</b>, o sistema tem pouca energia disponível e a proteção mais eficiente por unidade de custo é <b>operacional</b>: alongar o tempo efetivo de fechamento. Pelo cálculo atual, ${f1(t.tmin)} min zeram a subpressão e ${f1(t.tcol)} min afastam a carga de colapso. A ventosa entra como redundância, não como solução única.`;
+ } else {
+  cc.className='callout';
+  cc.innerHTML=`Nas condições atuais a pressão mínima permanece positiva (${f1(t.pmin)} mca). A ventosa continua justificada para o enchimento e para eventos não previstos — falha de energia, manobra acidental, esvaziamento.`;
+ }
+}
+
+/* ---------------- ENCHIMENTO ---------------- */
+function runEn(){
+ if(!document.getElementById('tEnch')) return;
+ const g=9.80665, D=S.Dsif, L=S.Lsif, A=Math.PI*D*D/4, t=calcTr();
+ const crit=document.getElementById('critEnch').value;
+ let v = crit==='nt' ? 0.05*S.Qsif/A : (crit==='v03' ? 0.30 : S.vench);
+ if(crit!=='man') setField('vench', Math.round(v*100)/100);
+ v=S.vench;
+ const Q=A*v, vol=A*L, te=L/v;
+ document.getElementById('tEnch').innerHTML=`
+  <tr><td>Volume do trecho</td><td class="num">${f0(vol)} m³</td></tr>
+  <tr><td>Velocidade de enchimento</td><td class="num">${f1(v)} m/s</td></tr>
+  <tr><td>Vazão de enchimento</td><td class="num">${f1(Q)} m³/s · ${f1(Q*1000)} L/s</td></tr>
+  <tr><td>Fração da vazão de projeto</td><td class="num">${f1(Q/S.Qsif*100)}%</td></tr>
+  <tr><td>Tempo de enchimento</td><td class="num"><b>${f1(te/60)} min</b> · ${f1(te/3600)} h</td></tr>
+  <tr><td>Velocidade em operação normal</td><td class="num">${f1(t.V)} m/s</td></tr>`;
+
+ const sen=Math.sin(Math.atan(S.decliv/100));
+ const Vc=1.23*Math.sqrt(g*D*sen);
+ const okOp=t.V>=Vc, okEn=v>=Vc;
+ document.getElementById('tAr').innerHTML=`
+  <tr><td>Declividade adotada</td><td class="num">${f1(S.decliv)}% · ${f1(Math.atan(S.decliv/100)*180/Math.PI)}°</td></tr>
+  <tr><td>Velocidade crítica de arraste (Kent)</td><td class="num"><b>${f1(Vc)} m/s</b></td></tr>
+  <tr><td>Velocidade de enchimento</td><td class="num ${okEn?'ok':'bad'}">${f1(v)} m/s — ${okEn?'arrasta o ar':'não arrasta'}</td></tr>
+  <tr><td>Velocidade de operação</td><td class="num ${okOp?'ok':'warn'}">${f1(t.V)} m/s — ${okOp?'arrasta o ar':'no limite ou abaixo'}</td></tr>`;
+ const ac=document.getElementById('arCall');
+ if(!okEn && !okOp){ac.className='callout bad';
+  ac.innerHTML=`Nem o enchimento nem a operação normal atingem a velocidade de arraste. O ar admitido tende a permanecer nos pontos altos, estrangulando a seção, elevando a perda de carga e criando o volume compressível que amplifica qualquer transiente. <b>A expulsão precisa ser por ventosa, não pelo escoamento.</b>`;}
+ else if(!okEn){ac.className='callout warn';
+  ac.innerHTML=`O enchimento lento não arrasta bolsões, o que é justamente a intenção — o ar deve sair pelas ventosas dos pontos altos, não ser empurrado adiante. A operação normal (${f1(t.V)} m/s) fica ${okOp?'acima':'no limite'} da velocidade de arraste, então o ar residual ${okOp?'é removido em regime':'pode permanecer indefinidamente'}.`;}
+ else {ac.className='callout';
+  ac.innerHTML=`A velocidade de enchimento já supera a crítica de arraste. Isso move o ar, mas transporta bolsões inteiros — o que é exatamente o mecanismo do reencontro violento de coluna. Velocidade menor, com expulsão por ventosa, costuma ser mais segura.`;}
+
+ let hr='';
+ [0.05,0.1,0.2,0.5,1.0,t.V].forEach(dv=>{
+  const dH=t.a*dv/g;
+  const cls = dH>50?'bad':(dH>15?'warn':'ok');
+  const ord = dH>50?'destrutiva':(dH>15?'severa':'administrável');
+  hr+=`<tr><td class="num">${f1(dv)} m/s${Math.abs(dv-t.V)<1e-6?' (operação)':''}</td><td class="num ${cls}">${f1(dH)} mca</td><td class="${cls}">${ord}</td></tr>`;});
+ document.getElementById('tReenc').innerHTML=hr;
+
+ const vE=calcVent(Q,Math.min(S.dpV,0.15));
+ document.getElementById('tVentE').innerHTML=`
+  <tr><td>Vazão de ar a expulsar</td><td class="num">${f1(Q)} m³/s</td></tr>
+  <tr><td>Diferencial adotado na expulsão</td><td class="num">${f1(Math.min(S.dpV,0.15))} bar</td></tr>
+  <tr><td>Diâmetro de orifício necessário</td><td class="num"><b>${f0(vE.d)} mm</b></td></tr>
+  <tr><td>Diâmetro nominal sugerido</td><td class="num">DN ${dnCom(vE.d)}</td></tr>
+  <tr><td>Regime de escoamento no orifício</td><td class="num">${vE.crit?'crítico':'subsônico'}</td></tr>`;
+
+ document.getElementById('riscoEnch').innerHTML=`<ul>
+  <li><b>Bolsão retido em ponto alto.</b> Reduz a seção útil, aumenta a perda de carga e diminui a vazão. Com ${f1(S.decliv)}% de declividade a velocidade de arraste é ${f1(Vc)} m/s.</li>
+  <li><b>Reencontro de coluna.</b> Quando a bolsa colapsa, ΔH = a·Δv/g. A ${f1(v)} m/s isso dá ${f1(t.a*v/g)} mca; a ${f1(t.V)} m/s daria ${f1(t.a*t.V/g)} mca. A diferença entre encher devagar e encher rápido é essa.</li>
+  <li><b>Ar comprimido como mola.</b> Volume de ar aprisionado transforma o conduto em sistema com dois graus de liberdade e oscilação de período longo, que a análise de golpe clássica não captura.</li>
+  <li><b>Ventosa subdimensionada.</b> Se o orifício não escoa a vazão de ar exigida, a pressão interna sobe e a coluna é freada bruscamente — o dispositivo de proteção vira a fonte do transiente.</li>
+  <li><b>Enchimento simultâneo de linhas paralelas.</b> Reparte a vazão de modo instável, e a linha que enche primeiro impõe a condição de contorno à outra.</li>
+ </ul>`;
+}
+
+/* ---------------- CURVA DE VAZÃO ---------------- */
+function cvBase(){
+ const g=9.80665, Ap=Math.PI*S.Dsif*S.Dsif/4, Q0=S.Qsif;
+ const Ktot0=2*g*S.dHcv*Ap*Ap/(Q0*Q0);
+ const Kg=s=>{const Ag=S.bcv*S.acv*Math.max(s,1e-4);return Math.pow(Ap/(S.Ccv*Ag),2);};
+ let Kp=Ktot0-Kg(1);
+ const negativo=Kp<0.02;
+ if(negativo) Kp=0.02;
+ const tau=s=>Math.sqrt(Ktot0/(Kp+Kg(s)));
+ const tmax=tau(1);
+ return {tau:s=>tau(s)/tmax, Kg, Kp, Ktot0, Ap, Q0, negativo};
+}
+function leiS(lei,x){
+ switch(lei){
+  case 'dois': return x<0.3 ? 1-(0.8/0.3)*x : 0.2*(1-(x-0.3)/0.7);
+  case 'cos':  return (1+Math.cos(Math.PI*x))/2;
+  case 'cub':  return Math.pow(1-x,3);
+  default:     return 1-x;
+ }
+}
+function serieTau(lei,N){
+ const B=cvBase(), out=[];
+ for(let i=0;i<=N;i++){
+  const x=i/N;
+  let tv;
+  if(lei==='tau'){ // inverte a curva: tau linear no tempo
+   const alvo=1-x; let lo=0,hi=1;
+   for(let k=0;k<40;k++){const m=(lo+hi)/2; (B.tau(m)<alvo?lo=m:hi=m);}
+   tv=B.tau((lo+hi)/2);
+  } else tv=B.tau(Math.max(0,leiS(lei,x)));
+  out.push(tv);
+ }
+ return out;
+}
+function tEquiv(lei,T){
+ const N=400, y=serieTau(lei,N), dt=T/N;
+ let mx=0; for(let i=1;i<=N;i++){const d=Math.abs(y[i]-y[i-1])/dt; if(d>mx)mx=d;}
+ return mx>0?1/mx:T;
+}
+const LEIS=[['lin','Linear na posição'],['dois','Dois estágios'],['cos','Senoidal'],['cub','Cúbica'],['tau','τ linear (ótima)']];
+
+function runCv(){
+ if(!document.getElementById('chTau')) return;
+ const g=9.80665, B=cvBase(), T=S.Tman*60, lei=document.getElementById('leiMan').value;
+ const t=calcTr();
+ // curva caracteristica
+ const xs=[],ys=[];
+ for(let i=0;i<=50;i++){const s=i/50; xs.push(s); ys.push(B.tau(s));}
+ lineChart(document.getElementById('chTau'),xs,ys,'abertura relativa a/a_máx','τ = Q/Q₀',[],null);
+
+ const teq=tEquiv(lei,T), amp=T/teq;
+ const dHT=2*S.Lsif*t.V/(g*T), dHE=2*S.Lsif*t.V/(g*teq);
+ document.getElementById('tEq').innerHTML=`
+  <tr><td>Perda de carga do conduto (K)</td><td class="num">${f1(B.Kp)}</td></tr>
+  <tr><td>Perda da comporta totalmente aberta (K)</td><td class="num">${f1(B.Kg(1))}</td></tr>
+  <tr><td>Tempo de curso nominal</td><td class="num">${f1(T/60)} min</td></tr>
+  <tr><td>Tempo equivalente de fechamento</td><td class="num"><b>${f1(teq/60)} min</b></td></tr>
+  <tr><td>Amplificação pela não linearidade</td><td class="num ${amp>2?'bad':(amp>1.3?'warn':'ok')}"><b>${f1(amp)}×</b></td></tr>
+  <tr><td>ΔH pelo tempo de curso</td><td class="num">${f1(dHT)} m</td></tr>
+  <tr><td>ΔH pelo tempo equivalente</td><td class="num">${f1(dHE)} m</td></tr>`;
+
+ const teqL=tEquiv('lin',T), ampL=T/teqL;
+ const ec=document.getElementById('eqCall');
+ ec.className = amp>2?'callout bad':(amp>1.3?'callout warn':'callout');
+ ec.innerHTML = B.negativo
+  ? `A perda de carga do conduto ficou não positiva: o desnível informado é pequeno demais para a vazão nesta seção. Ajuste o desnível ou a vazão para que a curva tenha sentido físico.`
+  : `Com lei <b>${LEIS.find(l=>l[0]===lei)[1].toLowerCase()}</b>, uma manobra de ${f1(T/60)} min equivale a <b>${f1(teq/60)} min</b> de fechamento efetivo — amplificação de ${f1(amp)}×. A lei linear na posição sozinha já amplifica ${f1(ampL)}×, o que fica na mesma ordem da razão de ${f1(S.ampl)}× observada entre modelagem numérica e fórmula analítica. Isso sugere que boa parte da divergência entre os dois métodos é a não linearidade da curva de vazão, e não erro de qualquer um deles.`;
+
+ // tau ao longo do tempo
+ const N=120, ys2=serieTau(lei,N), xs2=[];
+ for(let i=0;i<=N;i++) xs2.push(i/N*T/60);
+ lineChart(document.getElementById('chLei'),xs2,ys2,'tempo (min)','τ = Q/Q₀',[],null);
+
+ document.getElementById('tLeis').innerHTML=LEIS.map(l=>{
+  const te=tEquiv(l[0],T), a=T/te, dh=2*S.Lsif*t.V/(g*te);
+  const cls=a>2?'bad':(a>1.3?'warn':'ok');
+  return `<tr${l[0]===lei?' class="tot"':''}><td>${l[1]}</td><td class="num">${f1(te/60)}</td>
+   <td class="num ${cls}">${f1(a)}×</td><td class="num">${f1(dh)}</td></tr>`;}).join('');
+
+ let hq='';
+ [1,0.8,0.6,0.5,0.4,0.3,0.2,0.15,0.1,0.05].forEach(s=>{
+  const tv=B.tau(s);
+  hq+=`<tr><td class="num">${f1(s*100)}%</td><td class="num">${f1(s*S.acv)}</td>
+   <td class="num">${f1(s*S.acv*S.bcv)}</td><td class="num">${f1(tv)}</td><td class="num">${f1(tv*B.Q0)}</td></tr>`;});
+ document.getElementById('tQa').innerHTML=hq;
+}
+
+/* ---------------- abas, help e ligações ---------------- */
+function initUI(){
+ document.querySelectorAll('.tabbar .tab').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tabbar .tab').forEach(x=>x.setAttribute('aria-selected','false'));
+  b.setAttribute('aria-selected','true');
+  document.querySelectorAll('.pane').forEach(x=>x.classList.remove('on'));
+  document.getElementById('pane-'+b.dataset.p).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+ }));
+ const m=document.getElementById('helpModal');
+ document.getElementById('helpBtn').addEventListener('click',()=>m.classList.add('on'));
+ document.getElementById('helpClose').addEventListener('click',()=>m.classList.remove('on'));
+ m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on');});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')m.classList.remove('on');});
+ ['sifaoPreset','funcVent','critEnch','leiMan'].forEach(id=>{
+  const el=document.getElementById(id); if(el) el.addEventListener('change',()=>{
+   if(id==='sifaoPreset') aplicaPreset();
+   run();});
+ });
+ ['Lsif','Dsif','esp_t','Qsif','Hs','ampl'].forEach(id=>{
+  const n=document.getElementById('n_'+id), r=document.getElementById('r_'+id);
+  const mark=()=>{const sp=document.getElementById('sifaoPreset'); if(sp) sp.value='custom';};
+  if(n) n.addEventListener('input',mark); if(r) r.addEventListener('input',mark);
+ });
+}
+
+build(); initUI(); run();
 </script>
 </body>
 </html>
