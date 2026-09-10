@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Régua Piezométrica — Fechamento das Comportas dos Sifões · Eixão Lote 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --abismo:#0A151E;
+  --leito:#122330;
+  --leito-2:#172C3B;
+  --linha:#223B4C;
+  --piezo:#4EA8DE;
+  --piezo-fraco:#2C6F97;
+  --sobre:#E5533D;
+  --geratriz:#5FBF7F;
+  --vapor:#F2B441;
+  --texto:#DFEAF1;
+  --fraco:#7B94A5;
+  --muito-fraco:#4E6675;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+  --disp:'Archivo','IBM Plex Sans',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--abismo);
+  color:var(--texto);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 18px 80px}
+
+/* ---------- cabeçalho ---------- */
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--piezo-fraco);margin:0 0 10px;
+}
+h1{
+  font-family:var(--disp);font-weight:800;font-stretch:112%;
+  font-size:clamp(28px,6.4vw,46px);line-height:1.02;letter-spacing:-.025em;
+  margin:0 0 12px;
+}
+h1 em{font-style:normal;color:var(--piezo)}
+.sub{color:var(--fraco);max-width:62ch;margin:0 0 4px;font-size:14.5px}
+.rule{height:1px;background:var(--linha);margin:26px 0}
+
+/* ---------- controle de tempo ---------- */
+.painel{
+  background:var(--leito);border:1px solid var(--linha);border-radius:14px;
+  padding:20px 20px 22px;margin-bottom:22px;
+}
+.painel-topo{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;margin-bottom:16px}
+.rot{
+  font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--fraco);
+}
+.tf-valor{font-family:var(--disp);font-weight:800;font-size:44px;line-height:1;letter-spacing:-.03em;color:var(--piezo)}
+.tf-un{font-family:var(--mono);font-size:13px;color:var(--fraco);margin-left:-4px}
+.tag{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--linha);border-radius:999px;padding:3px 9px;color:var(--fraco);
+}
+.tag.med{border-color:var(--piezo-fraco);color:var(--piezo)}
+
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:34px;background:transparent;cursor:pointer;margin:0;
+}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--linha);border-radius:2px}
+input[type=range]::-moz-range-track{height:4px;background:var(--linha);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--piezo);
+  border:3px solid var(--abismo);margin-top:-9px;box-shadow:0 0 0 1px var(--piezo);
+}
+input[type=range]::-moz-range-thumb{
+  width:16px;height:16px;border-radius:50%;background:var(--piezo);border:3px solid var(--abismo);box-shadow:0 0 0 1px var(--piezo);
+}
+input[type=range]:focus-visible{outline:2px solid var(--piezo);outline-offset:6px;border-radius:6px}
+
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.preset{
+  font-family:var(--mono);font-size:12px;background:var(--leito-2);color:var(--texto);
+  border:1px solid var(--linha);border-radius:8px;padding:7px 11px;cursor:pointer;
+  display:flex;flex-direction:column;gap:2px;align-items:flex-start;line-height:1.25;
+}
+.preset span{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--fraco)}
+.preset:hover{border-color:var(--piezo-fraco)}
+.preset[aria-pressed=true]{border-color:var(--piezo);color:var(--piezo)}
+.preset[aria-pressed=true] span{color:var(--piezo-fraco)}
+.preset:focus-visible{outline:2px solid var(--piezo);outline-offset:2px}
+
+/* ---------- régua ---------- */
+.regua-box{background:var(--leito);border:1px solid var(--linha);border-radius:14px;padding:18px 6px 10px;margin-bottom:22px;overflow-x:auto}
+.regua-cab{padding:0 14px;margin-bottom:6px}
+h2{
+  font-family:var(--disp);font-weight:700;font-stretch:108%;font-size:19px;letter-spacing:-.015em;margin:0 0 4px;
+}
+.legenda{display:flex;flex-wrap:wrap;gap:6px 16px;padding:8px 14px 2px;font-family:var(--mono);font-size:10.5px;color:var(--fraco)}
+.legenda i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;min-width:620px}
+.regua-box svg{min-width:660px}
+
+/* ---------- cards ---------- */
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px;margin-bottom:22px}
+.card{background:var(--leito);border:1px solid var(--linha);border-left:3px solid var(--linha);border-radius:12px;padding:14px 15px}
+.card h3{font-family:var(--disp);font-weight:700;font-size:16px;margin:0 0 2px;letter-spacing:-.01em}
+.card .meta{font-family:var(--mono);font-size:10.5px;color:var(--fraco);margin-bottom:11px}
+.linhas{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-family:var(--mono);font-size:12.5px}
+.linhas dt{color:var(--fraco)}
+.linhas dd{margin:0;text-align:right;font-weight:500}
+.estado{
+  margin-top:11px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 8px;border-radius:6px;display:inline-block;
+}
+.s-ok{border-left-color:var(--geratriz)!important}
+.s-ok .estado{background:rgba(95,191,127,.12);color:var(--geratriz)}
+.s-ok dd.destaque{color:var(--geratriz)}
+.s-margem{border-left-color:var(--piezo)!important}
+.s-margem .estado{background:rgba(78,168,222,.12);color:var(--piezo)}
+.s-margem dd.destaque{color:var(--piezo)}
+.s-neg{border-left-color:var(--vapor)!important}
+.s-neg .estado{background:rgba(242,180,65,.13);color:var(--vapor)}
+.s-neg dd.destaque{color:var(--vapor)}
+.s-crit{border-left-color:var(--sobre)!important}
+.s-crit .estado{background:rgba(229,83,61,.14);color:var(--sobre)}
+.s-crit dd.destaque{color:var(--sobre)}
+
+/* ---------- tabelas ---------- */
+.tab-box{background:var(--leito);border:1px solid var(--linha);border-radius:14px;padding:18px;margin-bottom:22px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px;min-width:520px}
+th{
+  text-align:right;font-weight:500;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--fraco);
+  padding:0 8px 9px;border-bottom:1px solid var(--linha);white-space:nowrap;
+}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 8px;border-bottom:1px solid rgba(34,59,76,.5);text-align:right;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.nome{font-family:var(--sans);font-weight:500}
+.chip{font-size:11px;padding:2px 7px;border-radius:5px}
+.chip.ok{background:rgba(95,191,127,.13);color:var(--geratriz)}
+.chip.al{background:rgba(242,180,65,.13);color:var(--vapor)}
+.chip.cr{background:rgba(229,83,61,.14);color:var(--sobre)}
+
+/* ---------- parâmetros ---------- */
+.params{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.param label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fraco);margin-bottom:6px}
+.param output{float:right;color:var(--piezo);font-weight:500;text-transform:none;letter-spacing:0}
+.nota{font-family:var(--sans);font-size:12.5px;color:var(--fraco);margin:6px 0 0;line-height:1.5}
+
+/* ---------- alertas ---------- */
+.alerta{
+  background:var(--leito);border:1px solid var(--linha);border-left:3px solid var(--sobre);
+  border-radius:12px;padding:15px 17px;margin-bottom:12px;
+}
+.alerta h4{font-family:var(--disp);font-weight:700;font-size:14.5px;margin:0 0 6px}
+.alerta p{margin:0;font-size:13.5px;color:var(--fraco);line-height:1.55}
+.alerta.amb{border-left-color:var(--vapor)}
+.alerta code{font-family:var(--mono);font-size:12.5px;color:var(--texto);background:var(--leito-2);padding:1px 5px;border-radius:4px}
+
+/* ---------- abas ---------- */
+.abas{display:flex;gap:6px;border-bottom:1px solid var(--linha);margin:26px 0 22px}
+.aba{
+  font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;
+  background:none;border:none;border-bottom:2px solid transparent;color:var(--fraco);
+  padding:10px 14px;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:7px;
+}
+.aba:hover{color:var(--texto)}
+.aba[aria-selected=true]{color:var(--piezo);border-bottom-color:var(--piezo)}
+.aba:focus-visible{outline:2px solid var(--piezo);outline-offset:-2px;border-radius:4px}
+.badge{
+  background:var(--sobre);color:#fff;font-size:10px;letter-spacing:0;
+  border-radius:999px;padding:1px 6px;line-height:1.5;
+}
+
+/* ---------- tabelas de auditoria ---------- */
+table.aud{min-width:640px;font-size:12px}
+table.aud td{text-align:left;vertical-align:top;white-space:normal;line-height:1.5;padding:11px 9px}
+table.aud th{text-align:left}
+table.aud th:last-child,table.aud td:last-child{text-align:center;white-space:nowrap}
+table.aud td.ref{
+  font-weight:600;color:var(--piezo);text-align:center;white-space:nowrap;width:44px;
+}
+table.aud td b{color:var(--texto);font-weight:600}
+table.aud td sub{font-size:9px}
+
+footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--linha);font-size:12.5px;color:var(--fraco);line-height:1.6}
+footer strong{color:var(--texto);font-weight:600}
+
+@media (max-width:640px){
+  .wrap{padding:20px 13px 60px}
+  .tf-valor{font-size:36px}
+  .painel{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">EIX-L4.GRL-REL-TEX-NTC-001-R00 · Rev. 00 · jan/2026</p>
+  <h1>Régua piezométrica<br><em>fechamento das comportas</em></h1>
+  <p class="sub">Seis sifões invertidos dos Trechos II e III do Eixão das Águas. Arraste o tempo de manobra e acompanhe a pressão que sobra na face de jusante de cada comporta.</p>
+
+  <nav class="abas" role="tablist">
+    <button class="aba" id="abaSim" role="tab" aria-selected="true" aria-controls="viewSim">Simulação</button>
+    <button class="aba" id="abaAud" role="tab" aria-selected="false" aria-controls="viewAud">Auditoria<span class="badge">26</span></button>
+  </nav>
+
+  <div id="viewSim" role="tabpanel" aria-labelledby="abaSim">
+
+  <div class="painel">
+    <div class="painel-topo">
+      <span class="rot">Tempo de fechamento</span>
+      <span><span class="tf-valor" id="tfValor">8</span><span class="tf-un"> min</span></span>
+      <span class="tag" id="tfOrigem">valor tabelado</span>
+    </div>
+    <input type="range" id="tf" min="1" max="120" step="1" value="8" aria-label="Tempo de fechamento da comporta, em minutos">
+    <div class="presets" id="presets">
+      <button class="preset" data-tf="8">8 min<span>padrão COGERH</span></button>
+      <button class="preset" data-tf="16">16 min<span>dobro · nota técnica</span></button>
+      <button class="preset" data-tf="30">30 min<span>POM COGERH/SRH</span></button>
+      <button class="preset" data-tf="90">90 min<span>parecer Prof. Righeto</span></button>
+    </div>
+  </div>
+
+  <div class="regua-box">
+    <div class="regua-cab">
+      <h2>Pressão junto à comporta de montante</h2>
+      <p class="rot">m.c.a. · escoamento permanente menos o transitório</p>
+    </div>
+    <svg id="regua" viewBox="0 0 700 400" role="img" aria-labelledby="reguaTit"><title id="reguaTit">Colunas de pressão mínima por sifão</title></svg>
+    <div class="legenda">
+      <span><i style="background:var(--piezo)"></i>carga estacionária</span>
+      <span><i style="background:var(--geratriz)"></i>pressão positiva</span>
+      <span><i style="background:var(--vapor)"></i>subpressão</span>
+      <span><i style="background:var(--sobre)"></i>abaixo do colapso do tubo</span>
+      <span><i style="background:#3A4E5C"></i>faixa de vapor (−10,33)</span>
+    </div>
+  </div>
+
+  <div class="grade" id="cards"></div>
+
+  <div class="tab-box">
+    <h2>Curva de decaimento</h2>
+    <p class="rot" style="margin-bottom:10px">ΔH × tempo · escala log-log · pontos = valores tabelados no Hammer</p>
+    <svg id="curva" viewBox="0 0 700 340" role="img" aria-label="Variação de pressão versus tempo de fechamento"></svg>
+  </div>
+
+  <div class="tab-box">
+    <h2>Tempo mínimo de fechamento por critério</h2>
+    <p class="rot" style="margin-bottom:12px">Extrapolação pela lei de potência ajustada aos pontos com tf ≥ 5 min</p>
+    <table id="tabMin">
+      <thead><tr>
+        <th>Sifão</th><th>L (m)</th><th>Expoente n</th><th>R²</th>
+        <th>Sem colapso</th><th>P ≥ 0</th><th>P ≥ 1 mca</th><th>P ≥ 2 mca</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="tab-box">
+    <h2>Hammer × Michaud no tempo selecionado</h2>
+    <p class="rot" style="margin-bottom:12px">A fórmula do §2 da nota é Michaud (ΔH = 2LV/g·t<sub>f</sub>), não Allievi</p>
+    <table id="tabComp">
+      <thead><tr>
+        <th>Sifão</th><th>Michaud ΔH</th><th>Hammer ΔH</th><th>Razão</th>
+        <th>P estacionária</th><th>P mínima</th><th>Situação</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="tab-box">
+    <h2>Parâmetros do tubo e critério</h2>
+    <div class="params">
+      <div class="param">
+        <label for="vazao">Vazão por linha <output id="vazaoOut">9,5 m³/s</output></label>
+        <input type="range" id="vazao" min="4" max="14" step="0.5" value="9.5">
+      </div>
+      <div class="param">
+        <label for="esp">Espessura da parede <output id="espOut">7,938 mm</output></label>
+        <input type="range" id="esp" min="6" max="20" step="0.062" value="7.938">
+      </div>
+      <div class="param">
+        <label for="reforco">Crédito de resistência externa <output id="reforcoOut">1,0×</output></label>
+        <input type="range" id="reforco" min="1" max="20" step="0.5" value="1">
+        <p class="nota">Multiplicador sobre o colapso do tubo liso, para representar enterramento, envelope de concreto e anéis enrijecedores. Fica em 1,0× enquanto o projeto não fornecer a verificação.</p>
+      </div>
+      <div class="param">
+        <label for="criterio">Margem exigida de pressão <output id="criterioOut">0,0 mca</output></label>
+        <input type="range" id="criterio" min="0" max="5" step="0.5" value="0">
+      </div>
+    </div>
+    <p class="nota" id="pcolapso" style="margin-top:16px"></p>
+  </div>
+
+  </div><!-- /viewSim -->
+
+  <div id="viewAud" role="tabpanel" aria-labelledby="abaAud" hidden>
+
+  <p class="sub" style="margin-bottom:20px">Vinte e seis apontamentos verificados contra os Quadros 3.1, 3.2, 3.6, 3.7, 3.9 e 3.10 da nota técnica. Todos os recálculos foram refeitos a partir dos dados do próprio documento.</p>
+
+  <div class="alerta">
+    <h4>16 minutos não zera a subpressão</h4>
+    <p>O §4 da nota afirma que fechar em 16 min “parece ser uma solução conservadora”. Pelo Quadro 3.10 combinado com o Quadro 3.9, Boa Vista fica em <code>2,21 − 3,39 = −1,18 mca</code> e Serrote em <code>1,81 − 2,98 = −1,17 mca</code>. Ainda é vácuo, e ainda supera o colapso do tubo liso.</p>
+  </div>
+
+  <div class="alerta amb">
+    <h4>Linhas trocadas entre os Quadros 3.6 e 3.7</h4>
+    <p>O Quadro 3.2 dá Michaud de 7,39 m para Mão Ruiva (L = 1.123,08 m) e 7,63 m para Melancias (L = 1.160,86 m), coerente com os comprimentos. Nos Quadros 3.6 e 3.7 esses dois valores aparecem invertidos. Este painel usa os comprimentos do Quadro 3.1 como referência.</p>
+  </div>
+
+  <div class="alerta amb">
+    <h4>A curva da comporta não está declarada</h4>
+    <p>A divergência de 2,7× a 4,3× entre Hammer e Michaud é governada pela característica C<sub>v</sub> de fechamento adotada na simulação, que não consta na nota. Sem ela nenhum destes números é reproduzível.</p>
+  </div>
+
+  <div class="tab-box">
+    <h2>A · Inconsistências numéricas internas</h2>
+    <table class="aud"><thead><tr><th>Ref.</th><th>Onde</th><th>O relatório traz</th><th>Constatação</th><th>Grav.</th></tr></thead><tbody>
+      <tr><td class="ref">A1</td><td>Quadros 3.6 e 3.7</td><td>Melancias com Michaud 7,39 e Mão Ruiva 7,63</td><td>Linhas trocadas. O Quadro 3.2 traz o correto — Mão Ruiva 7,39 (L=1.123,08) e Melancias 7,63 (L=1.160,86) — confirmado por recálculo de 2LV/(g·t<sub>f</sub>).</td><td><span class="chip al">Alta</span></td></tr>
+      <tr><td class="ref">A2</td><td>Quadro 3.9, razão de magnitude</td><td>Melancias 3,5× e Mão Ruiva 3,2×</td><td>Propagação de A1. Corretos: 3,4× e 3,3×. Os outros quatro sifões batem na casa decimal, o que prova que a razão saiu do quadro invertido.</td><td><span class="chip al">Alta</span></td></tr>
+      <tr><td class="ref">A3</td><td>Quadro 3.10, tempos curtos</td><td>ΔH de 88,74 / 80,12 / 46,89 m</td><td>Fisicamente inatingível. Com P<sub>est</sub>=2,21, ΔH=88,74 implica −86,5 mca contra piso de −10,33. Ocorre em 12 das 72 células.</td><td><span class="chip cr">Crítica</span></td></tr>
+      <tr><td class="ref">A4</td><td>§2 vs. Quadro 3.10</td><td>Declara uso do DVCM</td><td>Com DVCM ativo o modelo travaria na pressão de vapor e devolveria cavidade mais pico secundário, não ΔH de 88 m. Ou não foi ligado, ou a grandeza não é pressão mínima.</td><td><span class="chip cr">Crítica</span></td></tr>
+      <tr><td class="ref">A5</td><td>Celeridade</td><td>702,0 m/s e 701,98 m/s</td><td>Duas celeridades para o mesmo tubo. Eq. 2.2 e Eq. 2.5 partem de hipóteses distintas e c₁ nunca é numerado. Recálculo por Korteweg: 701,99 m/s.</td><td><span class="chip al">Média</span></td></tr>
+      <tr><td class="ref">A6</td><td>Figuras 3.5, 3.7, 3.8, 3.9</td><td>Eixos até 40, 16, 16 e 50 mca</td><td>O ponto de 1 min fica fora de escala sem indicação. Quem lê só as figuras não vê o pior caso.</td><td><span class="chip al">Média</span></td></tr>
+    </tbody></table>
+  </div>
+
+  <div class="tab-box">
+    <h2>B · Contradições entre texto e quadros</h2>
+    <table class="aud"><thead><tr><th>Ref.</th><th>Onde</th><th>Contradição verificada</th><th>Grav.</th></tr></thead><tbody>
+      <tr><td class="ref">B1</td><td>§4, 1º marcador vs. Quadros 3.9 e 3.10</td><td>“16 minutos parecem ser uma solução conservadora”. Boa Vista: 2,21 − 3,39 = <b>−1,18 mca</b>. Serrote: 1,81 − 2,98 = <b>−1,17 mca</b>. Persiste vácuo.</td><td><span class="chip cr">Crítica</span></td></tr>
+      <tr><td class="ref">B2</td><td>§3 (Fig. 3.4) vs. Quadro 3.9</td><td>“Para fechamentos superiores a 8 min não há pressões negativas em nenhum ponto”. Em 8 min, quatro dos seis estão negativos: −3,80 / −3,27 / −0,53 / −0,35.</td><td><span class="chip cr">Crítica</span></td></tr>
+      <tr><td class="ref">B3</td><td>§3 (Juazeirinho) vs. Quadro 3.9</td><td>Conclui ausência de pressão negativa por leitura visual da envoltória. O quadro registra −0,01 mca.</td><td><span class="chip ok">Baixa</span></td></tr>
+      <tr><td class="ref">B4</td><td>Obs. do Quadro 3.9 vs. modelo</td><td>Fala em “pressões maiores nos pontos mais baixos”. O modelo simplificado tem só dois nós — não existem pontos intermediários em cinco dos seis sifões.</td><td><span class="chip al">Alta</span></td></tr>
+      <tr><td class="ref">B5</td><td>Obs. do Quadro 3.9, redação</td><td>A última coluna é descrita como sobrepressão máxima e, na frase seguinte, como o ponto de pressão mínima.</td><td><span class="chip ok">Baixa</span></td></tr>
+      <tr><td class="ref">B6</td><td>§1 vs. todo o documento</td><td>O objetivo é avaliar esforços acima da carga de trabalho da comporta. <b>Nenhum esforço em kN é calculado em lugar algum.</b></td><td><span class="chip cr">Crítica</span></td></tr>
+    </tbody></table>
+  </div>
+
+  <div class="tab-box">
+    <h2>C · Nomenclatura e conceito</h2>
+    <table class="aud"><thead><tr><th>Ref.</th><th>Onde</th><th>Observação</th></tr></thead><tbody>
+      <tr><td class="ref">C1</td><td>§2, Eq. 2.1</td><td>Chamada de “Allievi modificada”. Com t<sub>c</sub>=2L/a reduz a ΔH = 2LV/(g·t<sub>f</sub>) — <b>Michaud (1878)</b>. Allievi é a solução em cadeia; ΔH = aV/g é Joukowsky. Os Quadros 3.3–3.8 rotulam “Allievi + Michaud”, contradizendo o §2.</td></tr>
+      <tr><td class="ref">C2</td><td>§2, Eq. 2.2</td><td>Apresentada como adaptação de Allievi. É a <b>fórmula de Korteweg</b>.</td></tr>
+      <tr><td class="ref">C3</td><td>§2, constantes</td><td>“2,2.109 Pa” e “2,0.1011 Pa” — expoentes perdidos. Corretos: 2,2×10⁹ e 2,0×10¹¹.</td></tr>
+      <tr><td class="ref">C4</td><td>§2, atrito transiente</td><td>“Unstead-Vitkovsky” (falta o <i>y</i>). O modelo adotado foi <b>Steady</b>, que no HAMMER equivale a desprezar o atrito transiente — conservador, mas não declarado nem confrontado com Vitkovsky.</td></tr>
+      <tr><td class="ref">C5</td><td>§1 e §4</td><td>“Lotes II e III”. São <b>Trechos</b> II e III do <b>Lote 4</b>. Erro repetido.</td></tr>
+      <tr><td class="ref">C6</td><td>Todo o documento</td><td>Zero referências normativas. Sem DIN 19704, AWWA M11, NBR 12215-1 ou ASCE MOP 79, não há critério de aceitação declarado.</td></tr>
+    </tbody></table>
+  </div>
+
+  <div class="tab-box">
+    <h2>D · Lacunas que impedem a conclusão</h2>
+    <table class="aud"><thead><tr><th>Ref.</th><th>Item ausente</th><th>Consequência</th></tr></thead><tbody>
+      <tr><td class="ref">D1</td><td>Curva C<sub>v</sub>(τ) da comporta</td><td>Governa a divergência de 2,7–4,3×. Sem ela o estudo é irreproduzível e inauditável.</td></tr>
+      <tr><td class="ref">D2</td><td>Verificação de pressão externa</td><td>D/e ≈ 315. Timoshenko dá ≈1,4 mca de colapso contra −3,80 mca em 8 min.</td></tr>
+      <tr><td class="ref">D3</td><td>Tempo mínimo calculado</td><td>Cita “relatos” do POM (30 min) e parecer Righetto (90 min) sem calcular. Extrapolação dos próprios dados: ≈26 e ≈31 min para zerar.</td></tr>
+      <tr><td class="ref">D4</td><td>Colapso da cavidade de vapor</td><td>DVCM citado, nenhum pico secundário reportado. É o esforço que dimensiona equipamento e tubo.</td></tr>
+      <tr><td class="ref">D5</td><td>Cenários dimensionantes</td><td>Falta de energia, fechamento por gravidade, emergência, duas linhas simultâneas, comporta de jusante, onda de translação no canal.</td></tr>
+      <tr><td class="ref">D6</td><td>Sensibilidade ao ar entranhado</td><td>a = 702 m/s pressupõe água sem ar. O §4 admite o risco. Com 0,5–1% de ar livre o fenômeno muda de natureza.</td></tr>
+      <tr><td class="ref">D7</td><td>Mitigação por projeto</td><td>Nenhuma ventosa de duplo efeito, tanque unidirecional ou fechamento em dois estágios é avaliado.</td></tr>
+      <tr><td class="ref">D8</td><td>Validação fora do Juazeirinho</td><td>Aferido em 860 m e aplicado a 2.066 m sem nova verificação.</td></tr>
+    </tbody></table>
+  </div>
+
+  <div class="alerta amb">
+    <h4>Ressalvas desta auditoria</h4>
+    <p>D2 e D4 podem constar de documento separado do mesmo pacote — confirmar antes de caracterizar omissão. O cálculo de colapso ignora enterramento e enrijecedores. E se o consórcio esclarecer que a grandeza do Quadro 3.10 é queda de carga irrestrita e não pressão mínima, A3 deixa de ser impossibilidade física e vira problema de rotulagem. Nos três casos a providência é a mesma: esclarecimento formal.</p>
+  </div>
+
+  </div><!-- /viewAud -->
+
+  <footer>
+    <strong>Origem dos dados.</strong> Quadros 3.1, 3.2, 3.9 e 3.10 da Nota Técnica EIX-L4.GRL-REL-TEX-NTC-001-R00. Valores tabelados vão de 1 a 16 min; fora dessa faixa o painel extrapola por lei de potência ajustada em log-log aos pontos com t<sub>f</sub> ≥ 5 min, região onde não há cavitação relatada.<br><br>
+    <strong>Colapso do tubo.</strong> P<sub>cr</sub> = 2E/(1−ν²)·(e/D)³ para tubo circular liso, com E = 200 GPa e ν = 0,3. É ordem de grandeza para disparar verificação segundo AWWA M11, não veredicto estrutural.<br><br>
+    <strong>Fora do escopo.</strong> Colapso de cavidade de vapor, fechamento simultâneo das duas linhas da duplicação, enchimento do sifão, celeridade reduzida por ar entranhado e onda de translação no canal de montante. Nenhum desses cenários está na nota nem neste painel.
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+const TF = [1,2,3,4,5,6,7,8,9,10,15,16];
+
+const SIFOES = [
+  {nome:"Boa Vista",  trecho:"Trecho II",  L:2065.95, pEst:2.21, tcrit:4,
+   hammer:[88.74,40.64,21.88,14.11,10.33,8.21,6.90,6.03,5.41,4.95,3.75,3.39]},
+  {nome:"Serrote",    trecho:"Trecho III", L:1826.74, pEst:1.81, tcrit:3,
+   hammer:[80.12,33.61,17.77,11.52,8.52,6.84,5.80,5.10,4.60,4.23,3.26,2.98]},
+  {nome:"Melancias",  trecho:"Trecho II",  L:1160.86, pEst:2.17, tcrit:2,
+   hammer:[46.89,15.50,8.16,5.49,4.21,3.48,3.02,2.71,2.48,2.31,1.85,1.74]},
+  {nome:"Mão Ruiva",  trecho:"Trecho II",  L:1123.08, pEst:2.24, tcrit:2,
+   hammer:[44.43,14.56,7.69,5.20,4.00,3.32,2.89,2.59,2.38,2.22,1.79,1.68]},
+  {nome:"Juazeirinho",trecho:"Trecho III", L:860.53,  pEst:1.82, tcrit:1,
+   hammer:[29.69,9.23,5.01,3.48,2.73,2.31,2.03,1.84,1.70,1.60,1.31,1.25]},
+  {nome:"Pirangi",    trecho:"Trecho III", L:566.81,  pEst:1.80, tcrit:1,
+   hammer:[14.76,4.67,2.70,1.97,1.60,1.38,1.24,1.14,1.07,1.01,0.85,0.82]}
+];
+
+const D = 2.5, AREA = Math.PI*D*D/4, G = 9.81, E_ACO = 200e9, NU = 0.3, RHO = 1000;
+const P_VAPOR = -10.33;
+const COR = {piezo:"#4EA8DE", geratriz:"#5FBF7F", vapor:"#F2B441", sobre:"#E5533D", linha:"#223B4C", fraco:"#7B94A5"};
+
+// ---- ajuste log-log na cauda (tf >= 5 min) ----
+function ajustar(s){
+  const xs=[], ys=[];
+  TF.forEach((t,i)=>{ if(t>=5){ xs.push(Math.log(t)); ys.push(Math.log(s.hammer[i])); } });
+  const n=xs.length;
+  const mx=xs.reduce((a,b)=>a+b,0)/n, my=ys.reduce((a,b)=>a+b,0)/n;
+  let sxy=0,sxx=0,syy=0;
+  for(let i=0;i<n;i++){ const dx=xs[i]-mx, dy=ys[i]-my; sxy+=dx*dy; sxx+=dx*dx; syy+=dy*dy; }
+  const b=sxy/sxx, a=Math.exp(my-b*mx), r2=(sxy*sxy)/(sxx*syy);
+  s.A=a; s.n=b; s.r2=r2;
+}
+SIFOES.forEach(ajustar);
+
+const fmt=(v,d=2)=>v.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+
+function dH(s,tf){
+  const i=TF.indexOf(tf);
+  if(i>=0) return {v:s.hammer[i], tab:true};
+  return {v:s.A*Math.pow(tf,s.n), tab:false};
+}
+function michaud(s,tf){ return 2*s.L*estado.V/(G*tf*60); }
+function tempoPara(s,alvo){                 // alvo = ΔH admissível
+  if(alvo<=0) return Infinity;
+  return Math.pow(s.A/alvo, -1/s.n);
+}
+
+const estado = {tf:8, Q:9.5, V:9.5/AREA, e:0.007938, reforco:1, criterio:0, pCol:0};
+
+function calcColapso(){
+  const pcr = 2*E_ACO/(1-NU*NU)*Math.pow(estado.e/D,3);   // Pa
+  estado.pCol = (pcr/(RHO*G))*estado.reforco;             // mca
+}
+
+function classificar(pMin){
+  if(pMin <= P_VAPOR) return {cls:"s-crit", txt:"cavitação", chip:"cr"};
+  if(pMin <= -estado.pCol) return {cls:"s-crit", txt:"abaixo do colapso", chip:"cr"};
+  if(pMin < 0) return {cls:"s-neg", txt:"vácuo parcial", chip:"al"};
+  if(pMin < estado.criterio) return {cls:"s-margem", txt:"sem margem", chip:"al"};
+  return {cls:"s-ok", txt:"dentro do critério", chip:"ok"};
+}
+
+// ================= RÉGUA =================
+const VMAX=6, VMIN=-13, RY0=44, RY1=344;
+const yv = v => RY0 + (VMAX-Math.max(VMIN,Math.min(VMAX,v)))/(VMAX-VMIN)*(RY1-RY0);
+
+let anim = SIFOES.map(()=>({pMin:0, ini:false}));
+const reduz = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function desenharRegua(){
+  const svg=document.getElementById("regua");
+  const NS="http://www.w3.org/2000/svg";
+  let h="";
+  const colW=72, x0=76, gap=(700-x0-14-colW)/(SIFOES.length-1);
+
+  // faixa de vapor
+  h+=`<rect x="${x0-22}" y="${yv(P_VAPOR)}" width="${700-x0-2+22}" height="${RY1-yv(P_VAPOR)}" fill="#1B2C38" opacity=".75"/>`;
+
+  // grade
+  for(let v=VMAX; v>=VMIN; v-=2){
+    const y=yv(v);
+    const forte = v===0;
+    h+=`<line x1="${x0-22}" y1="${y}" x2="686" y2="${y}" stroke="${forte?"#3E5C70":COR.linha}" stroke-width="${forte?1.4:1}" ${forte?"":'stroke-dasharray="2 5"'}/>`;
+    h+=`<text x="${x0-30}" y="${y+4}" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="10.5" fill="${forte?"#9FB6C4":COR.fraco}">${v>0?"+":""}${v}</text>`;
+  }
+  // linha de vapor
+  h+=`<line x1="${x0-22}" y1="${yv(P_VAPOR)}" x2="686" y2="${yv(P_VAPOR)}" stroke="#4B6272" stroke-width="1" stroke-dasharray="6 4"/>`;
+  h+=`<text x="686" y="${yv(P_VAPOR)-6}" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="#6B8394" letter-spacing="1">PRESSÃO DE VAPOR −10,33</text>`;
+  // linha de colapso
+  const yc=yv(-estado.pCol);
+  if(-estado.pCol>VMIN){
+    h+=`<line x1="${x0-22}" y1="${yc}" x2="686" y2="${yc}" stroke="${COR.sobre}" stroke-width="1" stroke-dasharray="3 3" opacity=".8"/>`;
+    h+=`<text x="686" y="${yc+13}" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="${COR.sobre}" letter-spacing="1">COLAPSO DO TUBO −${fmt(estado.pCol,2)}</text>`;
+  }
+  h+=`<text x="10" y="${(RY0+RY1)/2}" transform="rotate(-90 10 ${(RY0+RY1)/2})" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}" letter-spacing="1.5">M.C.A.</text>`;
+
+  SIFOES.forEach((s,i)=>{
+    const x=x0+i*gap;
+    const a=anim[i];
+    const pEstY=yv(s.pEst), pMinY=yv(a.pMin);
+    const est=classificar(a.pMin);
+    const cor = est.chip==="cr"?COR.sobre : est.chip==="al"?COR.vapor : COR.geratriz;
+
+    // marcador da carga estacionária
+    h+=`<line x1="${x-4}" y1="${pEstY}" x2="${x+colW+4}" y2="${pEstY}" stroke="${COR.piezo}" stroke-width="2"/>`;
+    h+=`<circle cx="${x-4}" cy="${pEstY}" r="2.6" fill="${COR.piezo}"/>`;
+
+    // excursão
+    const top=Math.min(pEstY,pMinY), alt=Math.max(2,Math.abs(pMinY-pEstY));
+    h+=`<rect x="${x+16}" y="${top}" width="${colW-32}" height="${alt}" fill="${cor}" opacity=".2"/>`;
+    h+=`<line x1="${x+colW/2}" y1="${pEstY}" x2="${x+colW/2}" y2="${pMinY}" stroke="${cor}" stroke-width="2" opacity=".55"/>`;
+
+    // cap da pressão mínima
+    h+=`<rect x="${x}" y="${pMinY-2.5}" width="${colW}" height="5" rx="2.5" fill="${cor}"/>`;
+    const rot = (a.pMin<VMIN? "≤ −13" : (a.pMin>0?"+":"")+fmt(a.pMin,2));
+    const acima = a.pMin > -1.2;
+    h+=`<text x="${x+colW/2}" y="${acima?pMinY+16:pMinY-9}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="12.5" font-weight="600" fill="${cor}">${rot}</text>`;
+
+    // nome
+    h+=`<text x="${x+colW/2}" y="${RY1+22}" text-anchor="middle" font-family="Archivo,sans-serif" font-size="12.5" font-weight="700" fill="#C6D7E2">${s.nome}</text>`;
+    h+=`<text x="${x+colW/2}" y="${RY1+36}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9.5" fill="${COR.fraco}">${Math.round(s.L)} m</text>`;
+  });
+
+  svg.innerHTML=`<title>Colunas de pressão mínima por sifão</title>`+h;
+}
+
+// ================= CURVA log-log =================
+function desenharCurva(){
+  const svg=document.getElementById("curva");
+  const X0=52,X1=676,Y0=22,Y1=282;
+  const lx=t=>X0+(Math.log10(t)-0)/(Math.log10(120))*(X1-X0);
+  const ly=v=>Y1-(Math.log10(v)-Math.log10(0.3))/(Math.log10(120)-Math.log10(0.3))*(Y1-Y0);
+  let h="";
+
+  [1,2,5,10,20,30,60,120].forEach(t=>{
+    h+=`<line x1="${lx(t)}" y1="${Y0}" x2="${lx(t)}" y2="${Y1}" stroke="${COR.linha}" stroke-width="1" stroke-dasharray="2 5"/>`;
+    h+=`<text x="${lx(t)}" y="${Y1+16}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}">${t}</text>`;
+  });
+  [0.5,1,2,5,10,20,50,100].forEach(v=>{
+    h+=`<line x1="${X0}" y1="${ly(v)}" x2="${X1}" y2="${ly(v)}" stroke="${COR.linha}" stroke-width="1" stroke-dasharray="2 5"/>`;
+    h+=`<text x="${X0-8}" y="${ly(v)+4}" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}">${String(v).replace(".",",")}</text>`;
+  });
+  h+=`<text x="${(X0+X1)/2}" y="${Y1+34}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}" letter-spacing="1.5">TEMPO DE FECHAMENTO (min)</text>`;
+  h+=`<text x="14" y="${(Y0+Y1)/2}" transform="rotate(-90 14 ${(Y0+Y1)/2})" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}" letter-spacing="1.5">ΔH (m)</text>`;
+
+  const paleta=["#E5533D","#F2854B","#F2B441","#7FD1A0","#4EA8DE","#9B8BE0"];
+
+  SIFOES.forEach((s,i)=>{
+    let d="";
+    for(let k=0;k<=90;k++){
+      const t=Math.pow(10, Math.log10(1)+k/90*Math.log10(120));
+      const v=s.A*Math.pow(t,s.n);
+      if(v<0.3) break;
+      d+=(k===0?"M":"L")+lx(t).toFixed(1)+" "+ly(v).toFixed(1)+" ";
+    }
+    h+=`<path d="${d}" fill="none" stroke="${paleta[i]}" stroke-width="1.9" opacity=".9"/>`;
+    TF.forEach((t,j)=>{ if(s.hammer[j]>=0.3) h+=`<circle cx="${lx(t)}" cy="${ly(s.hammer[j])}" r="2.6" fill="${paleta[i]}"/>`; });
+  });
+
+  // marcador do tf atual
+  const X=lx(estado.tf);
+  h+=`<line x1="${X}" y1="${Y0}" x2="${X}" y2="${Y1}" stroke="${COR.piezo}" stroke-width="1.6"/>`;
+  h+=`<text x="${X}" y="${Y0-6}" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10.5" fill="${COR.piezo}">${estado.tf} min</text>`;
+
+  // legenda
+  SIFOES.forEach((s,i)=>{
+    const cx=60+i*106, cy=Y1+58;
+    h+=`<rect x="${cx}" y="${cy-7}" width="9" height="9" rx="2" fill="${paleta[i]}"/>`;
+    h+=`<text x="${cx+14}" y="${cy+1}" font-family="'IBM Plex Mono',monospace" font-size="10" fill="${COR.fraco}">${s.nome}</text>`;
+  });
+
+  svg.innerHTML=h;
+}
+
+// ================= CARDS + TABELAS =================
+function render(){
+  calcColapso();
+  const tf=estado.tf;
+
+  document.getElementById("tfValor").textContent=tf;
+  const tab=TF.includes(tf);
+  const org=document.getElementById("tfOrigem");
+  org.textContent = tab? "valor tabelado" : "extrapolado";
+  org.className = "tag"+(tab?" med":"");
+
+  document.querySelectorAll(".preset").forEach(b=>b.setAttribute("aria-pressed", String(+b.dataset.tf===tf)));
+
+  // cards
+  let c="";
+  SIFOES.forEach(s=>{
+    const r=dH(s,tf), pMin=s.pEst-r.v, est=classificar(pMin);
+    const mi=michaud(s,tf);
+    c+=`<article class="card ${est.cls}">
+      <h3>${s.nome}</h3>
+      <p class="meta">${s.trecho} · L = ${fmt(s.L,2)} m · risco de vapor abaixo de ${s.tcrit} min</p>
+      <dl class="linhas">
+        <dt>ΔH Hammer</dt><dd>${fmt(r.v)} m</dd>
+        <dt>ΔH Michaud</dt><dd>${fmt(mi)} m</dd>
+        <dt>Razão</dt><dd>${fmt(r.v/mi,1)}×</dd>
+        <dt>P estacionária</dt><dd>${fmt(s.pEst)} mca</dd>
+        <dt>P mínima</dt><dd class="destaque">${pMin>0?"+":""}${fmt(pMin)} mca</dd>
+      </dl>
+      <span class="estado">${est.txt}</span>
+    </article>`;
+  });
+  document.getElementById("cards").innerHTML=c;
+
+  // tabela tempos mínimos
+  let t1="";
+  SIFOES.forEach(s=>{
+    const tCol=tempoPara(s, s.pEst+estado.pCol);
+    const t0=tempoPara(s, s.pEst);
+    const t1m=tempoPara(s, s.pEst-1);
+    const t2m=tempoPara(s, s.pEst-2);
+    const cel=v=>{
+      if(!isFinite(v)||v<=0) return `<td style="color:${COR.sobre}">inatingível</td>`;
+      const cls = v<=16?"ok" : v<=45?"al":"cr";
+      return `<td><span class="chip ${cls}">${Math.ceil(v)} min</span></td>`;
+    };
+    t1+=`<tr><td class="nome">${s.nome}</td><td>${fmt(s.L,0)}</td><td>${fmt(s.n,3)}</td><td>${fmt(s.r2,4)}</td>
+      ${cel(tCol)}${cel(t0)}${cel(t1m)}${cel(t2m)}</tr>`;
+  });
+  document.querySelector("#tabMin tbody").innerHTML=t1;
+
+  // tabela comparativa
+  let t2="";
+  SIFOES.forEach(s=>{
+    const r=dH(s,tf), pMin=s.pEst-r.v, est=classificar(pMin), mi=michaud(s,tf);
+    t2+=`<tr><td class="nome">${s.nome}</td><td>${fmt(mi)}</td><td>${fmt(r.v)}</td><td>${fmt(r.v/mi,1)}×</td>
+      <td>${fmt(s.pEst)}</td><td style="color:${est.chip==="cr"?COR.sobre:est.chip==="al"?COR.vapor:COR.geratriz}">${pMin>0?"+":""}${fmt(pMin)}</td>
+      <td><span class="chip ${est.chip}">${est.txt}</span></td></tr>`;
+  });
+  document.querySelector("#tabComp tbody").innerHTML=t2;
+
+  document.getElementById("pcolapso").innerHTML =
+    `Com e = ${fmt(estado.e*1000,3)} mm e D = 2.500 mm, D/e = ${fmt(D/estado.e,0)}. Colapso do tubo liso a <strong style="color:var(--sobre)">−${fmt(estado.pCol,2)} mca</strong>${estado.reforco>1?` (já com o crédito de ${fmt(estado.reforco,1)}×)`:""}. A vazão de ${fmt(estado.Q,1)} m³/s dá velocidade de ${fmt(estado.V,2)} m/s no tubo de 4,91 m².`;
+
+  desenharCurva();
+
+  // anima régua
+  const alvos = SIFOES.map(s=>s.pEst-dH(s,tf).v);
+  if(reduz || !anim[0].ini){
+    anim.forEach((a,i)=>{ a.pMin=alvos[i]; a.ini=true; });
+    desenharRegua();
+  } else {
+    tween(alvos);
+  }
+}
+
+let raf=null;
+function tween(alvos){
+  if(raf) cancelAnimationFrame(raf);
+  const ini=anim.map(a=>a.pMin), t0=performance.now(), dur=340;
+  const passo=now=>{
+    const p=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-p,3);
+    anim.forEach((a,i)=>{ a.pMin=ini[i]+(alvos[i]-ini[i])*e; });
+    desenharRegua();
+    if(p<1) raf=requestAnimationFrame(passo); else raf=null;
+  };
+  raf=requestAnimationFrame(passo);
+}
+
+// ---- eventos ----
+document.getElementById("tf").addEventListener("input",e=>{ estado.tf=+e.target.value; render(); });
+document.querySelectorAll(".preset").forEach(b=>b.addEventListener("click",()=>{
+  estado.tf=+b.dataset.tf; document.getElementById("tf").value=estado.tf; render();
+}));
+document.getElementById("vazao").addEventListener("input",e=>{
+  estado.Q=+e.target.value; estado.V=estado.Q/AREA;
+  document.getElementById("vazaoOut").textContent=fmt(estado.Q,1)+" m³/s"; render();
+});
+document.getElementById("esp").addEventListener("input",e=>{
+  estado.e=+e.target.value/1000;
+  document.getElementById("espOut").textContent=fmt(+e.target.value,3)+" mm"; render();
+});
+document.getElementById("reforco").addEventListener("input",e=>{
+  estado.reforco=+e.target.value;
+  document.getElementById("reforcoOut").textContent=fmt(estado.reforco,1)+"×"; render();
+});
+document.getElementById("criterio").addEventListener("input",e=>{
+  estado.criterio=+e.target.value;
+  document.getElementById("criterioOut").textContent=fmt(estado.criterio,1)+" mca"; render();
+});
+
+// ---- abas ----
+const abas = [
+  {btn:document.getElementById("abaSim"), view:document.getElementById("viewSim")},
+  {btn:document.getElementById("abaAud"), view:document.getElementById("viewAud")}
+];
+abas.forEach((a,i)=>a.btn.addEventListener("click",()=>{
+  abas.forEach((b,j)=>{
+    b.btn.setAttribute("aria-selected", String(i===j));
+    b.view.hidden = i!==j;
+  });
+  if(i===0){ desenharCurva(); desenharRegua(); }
+  window.scrollTo({top:0, behavior: reduz?"auto":"smooth"});
+}));
+
+render();
+</script>
+</body>
+</html>
