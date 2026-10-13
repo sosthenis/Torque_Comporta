@@ -216,6 +216,32 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .note ul{margin:4px 0;padding-left:18px}
 footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--rule);font-size:.75rem;color:var(--steel)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== Assistente técnico Torque_Comporta ===== */
+#aiFab{position:fixed;right:22px;bottom:22px;z-index:1000;border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:12px 19px;background:linear-gradient(135deg,#5CC0E8,#1E6FA8);color:#08202F;font-weight:800;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.38)}
+#aiPanel{position:fixed;right:22px;bottom:80px;z-index:1000;width:440px;max-width:calc(100vw - 24px);height:610px;max-height:calc(100vh - 100px);display:none;flex-direction:column;background:linear-gradient(160deg,#22384E,#182A3A);border:1px solid var(--rule2);border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.55);overflow:hidden;color:var(--ink)}
+#aiPanel.open{display:flex}
+#aiPanel.minimized{height:52px!important;min-height:52px;max-height:52px;overflow:hidden}
+#aiPanel.minimized #aiCfg,#aiPanel.minimized #aiMsgs,#aiPanel.minimized #aiChips,#aiPanel.minimized #aiForm,#aiPanel.minimized #aiNotice{display:none!important}
+#aiHead{touch-action:none;cursor:move;user-select:none;background:linear-gradient(120deg,#1E6FA8,#163750);padding:12px 14px;font-weight:750;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--rule2)}
+#aiHead small{display:block;font-weight:400;opacity:.82;font-size:11px}
+#aiHead button{background:none;border:0;color:#fff;font-size:20px;padding:2px 5px;box-shadow:none}
+#aiActions{display:flex;align-items:center;gap:7px}
+#aiNotice{font-size:10.5px;color:var(--ink2);padding:6px 10px;background:rgba(229,180,90,.08);border-bottom:1px solid var(--rule)}
+#aiCfg{padding:8px 10px;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:110px 1fr;gap:6px;background:rgba(0,0,0,.12)}
+#aiCfg input,#aiCfg select,#aiIn{border:1px solid var(--rule2);border-radius:8px;padding:7px 9px;font-size:12.5px;background:var(--field);color:var(--ink)}
+#aiMsgs{flex:1;overflow:auto;padding:11px;display:flex;flex-direction:column;gap:8px}
+.aiM{max-width:94%;padding:9px 11px;border-radius:12px;font-size:13.2px;line-height:1.48;white-space:pre-wrap}
+.aiM.u{align-self:flex-end;background:#1E6FA8;color:#fff}
+.aiM.b{align-self:flex-start;background:rgba(255,255,255,.08);border:1px solid var(--rule);color:var(--ink)}
+.aiAct{align-self:flex-start;border:1px solid rgba(111,203,152,.55);background:rgba(111,203,152,.10);border-radius:11px;padding:9px 11px;font-size:12.5px;max-width:94%}
+.aiAct button{margin-top:7px;background:linear-gradient(180deg,#6FCB98,#3B9B6A);color:#092419}
+#aiChips{display:flex;gap:5px;flex-wrap:wrap;padding:0 10px 8px}
+#aiChips button{border:1px solid var(--rule);background:rgba(255,255,255,.05);border-radius:999px;padding:5px 9px;font-size:11.5px;color:var(--ink);box-shadow:none}
+#aiForm{display:flex;gap:6px;padding:9px;border-top:1px solid var(--rule)}
+#aiForm input{flex:1;min-width:0}#aiForm button{padding:7px 13px}
+@media(max-width:560px){#aiPanel{right:8px;bottom:70px;width:calc(100vw - 16px);height:70vh}#aiFab{right:12px;bottom:12px}}
+
 </style>
 </head>
 <body>
@@ -1355,5 +1381,151 @@ function initUI(){
 
 build(); initUI(); run();
 </script>
+
+<script>
+/* ===== Assistente técnico Torque_Comporta ===== */
+(function(){
+"use strict";
+if(window.__torqueAI)return;
+function E(id){return document.getElementById(id)}
+function F(n,d){if(!Number.isFinite(+n))return "—";return (+n).toLocaleString("pt-BR",{minimumFractionDigits:d==null?0:d,maximumFractionDigits:d==null?2:d})}
+function addText(t,c){var d=document.createElement("div");d.className="aiM "+c;d.textContent=String(t||"");E("aiMsgs").append(d);E("aiMsgs").scrollTop=1e9;return d}
+
+var KB=[
+"Você é o assistente técnico do dashboard Torque de acionamento — comporta vertical com fuso, da COGERH.",
+"Use sempre o ESTADO ATUAL DO PAINEL enviado com a pergunta.",
+"Seja objetivo, técnico e fundamentado. Não invente dados.",
+"O modelo é de primeira ordem para pré-dimensionamento e ordem de grandeza; não constitui projeto executivo.",
+"A cadeia principal é: empuxo hidrostático líquido, peso efetivo, atrito nas guias, atrito das vedações, força axial, torque da rosca, torque da escora, torque de projeto, torque e potência no motor.",
+"O modelo verifica autotravamento, rendimento do fuso e flambagem quando a haste trabalha em compressão.",
+"Não estão incluídos: downpull hidrodinâmico, desalinhamento, empenamento, incrustação/corrosão, pico real de descolamento da vedação, torque de assentamento e verificação estrutural completa.",
+"Na aba Transiente, use celeridade, 2L/a, Joukowsky, Michaud e o fator de amplificação numérica como screening. Pressão mínima, cavitação e colapso exigem validação por HAMMER/MOC e dados as built.",
+"Na aba Enchimento, avalie volume, vazão, tempo, critério de Kent para bolsões de ar e sobrepressão de reencontro de coluna.",
+"Na Curva de vazão, lembre que Q não é proporcional à abertura; o transiente responde à taxa de variação de tau=Q/Q0.",
+"Você pode propor ajustes de parâmetros. Nunca aplique sozinho.",
+"Para propor uma alteração, acrescente ao final uma linha no formato ACAO_JSON:{\"muGs\":0.30,\"FS\":1.6,\"tf\":12}. Use somente IDs existentes no painel."
+].join("\n");
+
+function live(){
+  var p=readP(),o=calc(p),tr=calcTr(),A=Math.PI*S.Dsif*S.Dsif/4;
+  var Qfill=A*S.vench,tfill=S.Lsif/Math.max(S.vench,1e-9);
+  var Vc=1.23*Math.sqrt(G*S.Dsif*Math.sin(Math.atan(S.decliv/100)));
+  var lei=E("leiMan")?E("leiMan").value:"lin",T=S.Tman*60,teq=tEquiv(lei,T);
+  var parts=[
+    ["peso efetivo",Math.max(0,o.Wef)],
+    ["atrito guias partida",Math.max(0,o.Fg_s)],
+    ["atrito vedações",Math.max(0,o.Fsel)]
+  ].sort(function(a,b){return b[1]-a[1]});
+  var L=[];
+  L.push("ESTADO ATUAL DO PAINEL");
+  L.push("Torque de projeto="+F(o.Tproj,1)+" N·m; pico partida="+F(o.Tup_s,1)+" N·m; regime="+F(o.Tup_r,1)+" N·m; FS="+F(p.FS,2)+"; atuador trabalho/máximo="+F(p.Ttrab,0)+"/"+F(p.Tmax,0)+" N·m.");
+  L.push("Margem vs trabalho="+F((p.Ttrab/o.Tproj-1)*100,1)+"%; margem vs máximo="+F((p.Tmax/o.Tproj-1)*100,1)+"%.");
+  L.push("Empuxo líquido="+F(o.FH/1000,2)+" kN; peso efetivo="+F(o.Wef/1000,2)+" kN; atrito guias="+F(o.Fg_s/1000,2)+" kN; atrito vedação="+F(o.Fsel/1000,2)+" kN; força axial partida="+F(o.Fup_s/1000,2)+" kN; parcela dominante="+parts[0][0]+".");
+  L.push("Fuso: torque rosca="+F(o.Trosca_s,1)+" N·m; escora="+F(o.Tesc_s,1)+" N·m; autotravante="+(o.selflock?"sim":"não")+"; rendimento="+F(o.etaFuso*100,1)+"%; FS flambagem="+(Number.isFinite(o.FSflamb)?F(o.FSflamb,2):"não aplicável")+".");
+  L.push("Motor: torque="+F(o.Tmot,2)+" N·m; potência mecânica="+F(o.Pmec/1000,2)+" kW.");
+  L.push("Transiente: L="+F(S.Lsif,1)+" m; D="+F(S.Dsif,2)+" m; Q="+F(S.Qsif,2)+" m³/s; fechamento="+F(S.tf,1)+" min; celeridade="+F(tr.a,1)+" m/s; ΔH="+F(tr.dHa,2)+" m; Pmín="+F(tr.pmin,2)+" mca; cavitação="+(tr.cav?"sim":"não")+"; FS colapso="+(Number.isFinite(tr.FS)?F(tr.FS,2):"não aplicável")+".");
+  L.push("Enchimento: v="+F(S.vench,2)+" m/s; Q="+F(Qfill,2)+" m³/s; tempo="+F(tfill/60,1)+" min; Vcrítica Kent="+F(Vc,2)+" m/s; ΔH reencontro="+F(tr.a*S.dvReenc/G,1)+" mca.");
+  L.push("Curva de vazão: lei="+lei+"; tempo nominal="+F(S.Tman,1)+" min; tempo equivalente="+F(teq/60,2)+" min; amplificação="+F(T/Math.max(teq,1e-9),2)+"x.");
+  L.push("Limitações: downpull, desalinhamento, incrustação/corrosão, torque de assentamento, validação estrutural detalhada e validação HAMMER/MOC não estão resolvidos.");
+  return L.join("\n");
+}
+
+function local(q){
+  var t=String(q||"").toLowerCase(),p=readP(),o=calc(p),tr=calcTr();
+  var parts=[
+    ["peso efetivo",Math.max(0,o.Wef)],
+    ["atrito nas guias",Math.max(0,o.Fg_s)],
+    ["atrito das vedações",Math.max(0,o.Fsel)]
+  ].sort(function(a,b){return b[1]-a[1]});
+  if(/atuador|motor|margem|atende|capacidade/.test(t)){
+    return "ATUADOR\nTorque de projeto: "+F(o.Tproj,1)+" N·m.\nTrabalho/máximo: "+F(p.Ttrab,0)+"/"+F(p.Tmax,0)+" N·m.\nMargem no trabalho: "+F((p.Ttrab/o.Tproj-1)*100,1)+"%.\nMargem no máximo: "+F((p.Tmax/o.Tproj-1)*100,1)+"%.\nTorque no motor: "+F(o.Tmot,2)+" N·m; potência mecânica: "+F(o.Pmec/1000,2)+" kW.";
+  }
+  if(/força|atrito|parcela|domina|por que.*torque/.test(t)){
+    return "DECOMPOSIÇÃO DA FORÇA\nPeso efetivo: "+F(o.Wef/1000,2)+" kN.\nAtrito guias: "+F(o.Fg_s/1000,2)+" kN.\nAtrito vedações: "+F(o.Fsel/1000,2)+" kN.\nForça axial de partida: "+F(o.Fup_s/1000,2)+" kN.\nParcela dominante: "+parts[0][0]+" ("+F(parts[0][1]/1000,2)+" kN).";
+  }
+  if(/transiente|golpe|cavita|colapso|pressão|ventosa/.test(t)){
+    return "TRANSIENTE\nCeleridade: "+F(tr.a,1)+" m/s; tempo crítico: "+F(tr.tc,1)+" s.\nΔH aplicado: "+F(tr.dHa,2)+" m.\nPressão mínima: "+F(tr.pmin,2)+" mca; absoluta: "+F(tr.pabs,2)+" mca.\nCavitação: "+(tr.cav?"SIM":"não")+".\nFS colapso: "+(Number.isFinite(tr.FS)?F(tr.FS,2):"não aplicável")+".\nEste resultado é screening analítico; valide a manobra real no HAMMER/MOC.";
+  }
+  if(/ench|bols|ar|kent|reencontro/.test(t)){
+    var A=Math.PI*S.Dsif*S.Dsif/4,Q=A*S.vench,te=S.Lsif/Math.max(S.vench,1e-9),Vc=1.23*Math.sqrt(G*S.Dsif*Math.sin(Math.atan(S.decliv/100)));
+    return "ENCHIMENTO\nVelocidade: "+F(S.vench,2)+" m/s; vazão: "+F(Q,2)+" m³/s; tempo: "+F(te/60,1)+" min.\nVelocidade crítica Kent: "+F(Vc,2)+" m/s.\nArraste de bolsões: "+(S.vench>=Vc?"possível":"não; o ar deve sair pelas ventosas")+".\nΔH de reencontro para Δv="+F(S.dvReenc,2)+" m/s: "+F(tr.a*S.dvReenc/G,1)+" mca.";
+  }
+  if(/curva|abertura|lei|tau|vazão/.test(t)){
+    var lei=E("leiMan").value,T=S.Tman*60,teq=tEquiv(lei,T);
+    return "CURVA Q(a)\nLei atual: "+lei+".\nTempo nominal: "+F(S.Tman,1)+" min; equivalente: "+F(teq/60,2)+" min; amplificação: "+F(T/Math.max(teq,1e-9),2)+"x.\nA vazão não é proporcional à abertura; o transiente responde à taxa de variação de Q/Q0.";
+  }
+  return "RESUMO\nTorque de projeto: "+F(o.Tproj,1)+" N·m; atuador "+F(p.Ttrab,0)+"/"+F(p.Tmax,0)+" N·m.\nForça axial partida: "+F(o.Fup_s/1000,2)+" kN; parcela dominante: "+parts[0][0]+".\nTransiente: ΔH "+F(tr.dHa,2)+" m; Pmín "+F(tr.pmin,2)+" mca; cavitação "+(tr.cav?"sim":"não")+".\nPergunte sobre torque, atuador, atritos, transiente, ventosa, enchimento ou curva de vazão.";
+}
+
+var fab=document.createElement("button");fab.id="aiFab";fab.type="button";fab.textContent="Assistente";
+var pan=document.createElement("div");pan.id="aiPanel";
+pan.innerHTML='<div id="aiHead"><div>Assistente técnico<small>Torque · transiente · enchimento · curva Q(a)</small></div><div id="aiActions"><button id="aiMin" type="button">−</button><button id="aiX" type="button">×</button></div></div>'+
+'<div id="aiNotice">Cálculos locais funcionam sem API. Chaves externas ficam somente nesta sessão do navegador.</div>'+
+'<div id="aiCfg"><select id="aiProv"><option value="gemini">Gemini</option><option value="openai">OpenAI</option></select><input id="aiKey" type="password" placeholder="Chave de API (opcional)"><input id="aiModel" placeholder="Modelo (opcional)" style="grid-column:1/3"></div>'+
+'<div id="aiMsgs"></div><div id="aiChips"></div><form id="aiForm"><input id="aiIn" placeholder="Pergunte sobre o sistema em tempo real" autocomplete="off"><button type="submit">Enviar</button></form>';
+document.body.append(fab,pan);
+
+["Resuma o caso atual","O atuador atende?","Qual parcela domina o torque?","Há risco de cavitação ou colapso?","Avalie o enchimento","Como reduzir o torque?"].forEach(function(x){
+  var b=document.createElement("button");b.type="button";b.textContent=x;b.onclick=function(){E("aiIn").value=x;E("aiForm").requestSubmit()};E("aiChips").append(b);
+});
+
+E("aiProv").value=localStorage.getItem("torque_ai_prov")||"gemini";
+E("aiModel").value=localStorage.getItem("torque_ai_model")||"";
+E("aiKey").value=sessionStorage.getItem("torque_ai_"+E("aiProv").value)||"";
+E("aiProv").onchange=function(){localStorage.setItem("torque_ai_prov",this.value);E("aiKey").value=sessionStorage.getItem("torque_ai_"+this.value)||""};
+E("aiKey").onchange=function(){sessionStorage.setItem("torque_ai_"+E("aiProv").value,this.value.trim())};
+E("aiModel").onchange=function(){localStorage.setItem("torque_ai_model",this.value.trim())};
+
+var drag=null,head=E("aiHead");
+function keep(){if(!pan.classList.contains("open"))return;var r=pan.getBoundingClientRect(),m=8,x=Math.min(Math.max(m,r.left),Math.max(m,innerWidth-r.width-m)),y=Math.min(Math.max(m,r.top),Math.max(m,innerHeight-r.height-m));pan.style.left=x+"px";pan.style.top=y+"px";pan.style.right="auto";pan.style.bottom="auto"}
+function pos(){try{var z=JSON.parse(localStorage.getItem("torque_ai_position")||"null");if(z&&Number.isFinite(z.x)&&Number.isFinite(z.y)){pan.style.left=z.x+"px";pan.style.top=z.y+"px";pan.style.right="auto";pan.style.bottom="auto"}}catch(e){}requestAnimationFrame(keep)}
+fab.onclick=function(){pan.classList.toggle("open");if(pan.classList.contains("open"))pos()};
+E("aiX").onclick=function(){pan.classList.remove("open")};
+E("aiMin").onclick=function(){pan.classList.toggle("minimized");E("aiMin").textContent=pan.classList.contains("minimized")?"□":"−";requestAnimationFrame(keep)};
+head.addEventListener("pointerdown",function(ev){if((ev.button!==0&&ev.pointerType==="mouse")||ev.target.closest("button"))return;var r=pan.getBoundingClientRect();drag={id:ev.pointerId,x:ev.clientX-r.left,y:ev.clientY-r.top};head.setPointerCapture(ev.pointerId);ev.preventDefault()});
+head.addEventListener("pointermove",function(ev){if(!drag||drag.id!==ev.pointerId)return;var m=8,w=pan.offsetWidth,h=pan.offsetHeight,x=Math.max(m,Math.min(ev.clientX-drag.x,Math.max(m,innerWidth-w-m))),y=Math.max(m,Math.min(ev.clientY-drag.y,Math.max(m,innerHeight-h-m)));pan.style.left=x+"px";pan.style.top=y+"px";pan.style.right="auto";pan.style.bottom="auto"});
+function stop(ev){if(!drag||ev.pointerId!==drag.id)return;drag=null;var r=pan.getBoundingClientRect();localStorage.setItem("torque_ai_position",JSON.stringify({x:r.left,y:r.top}))}
+head.addEventListener("pointerup",stop);head.addEventListener("pointercancel",stop);window.addEventListener("resize",function(){requestAnimationFrame(keep)});
+
+addText("Conheço os cálculos do painel e leio os parâmetros atuais em tempo real. Posso explicar mudanças no torque, avaliar a margem do atuador, interpretar transientes, ventosas, enchimento e a curva de vazão. Alterações sugeridas só são aplicadas após sua confirmação.","b");
+
+var hist=[];
+function key(){return (sessionStorage.getItem("torque_ai_"+E("aiProv").value)||"").trim()}
+async function ask(q){
+  var k=key(),prov=E("aiProv").value;if(!k)return local(q);
+  var sys=KB+"\n\n"+live();
+  try{
+    if(prov==="gemini"){
+      var m=E("aiModel").value.trim()||"gemini-2.5-flash";
+      var r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(m)+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":k},body:JSON.stringify({systemInstruction:{parts:[{text:sys}]},contents:hist.map(function(h){return {role:h.r==="u"?"user":"model",parts:[{text:h.t}]}}).concat([{role:"user",parts:[{text:q}]}])})});
+      var j=await r.json();return j.candidates&&j.candidates[0]&&j.candidates[0].content?j.candidates[0].content.parts.map(function(x){return x.text||""}).join(""):"Erro: "+((j.error&&j.error.message)||"sem resposta");
+    }
+    var mo=E("aiModel").value.trim()||"gpt-5-mini";
+    var ro=await fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+k},body:JSON.stringify({model:mo,messages:[{role:"system",content:sys}].concat(hist.map(function(h){return {role:h.r==="u"?"user":"assistant",content:h.t}})).concat([{role:"user",content:q}])})});
+    var jo=await ro.json();return jo.choices&&jo.choices[0]&&jo.choices[0].message?jo.choices[0].message.content:"Erro: "+((jo.error&&jo.error.message)||"sem resposta");
+  }catch(e){return "Falha na conexão com a API.\n\n"+local(q)}
+}
+
+var selects={pesoModo:["massa","esp"],rosca:["0","15","30"],escora:["0.005","0.01","0.03"],sifaoPreset:["boa","mao","mel","pir","ser","jua","custom"],funcVent:["anti","cin","auto"],critEnch:["nt","v03","man"],leiMan:["lin","dois","cos","cub","tau"]};
+function apply(a){
+  var done=[];
+  Object.keys(a||{}).forEach(function(k){
+    if(k==="empuxo"){var c=E("empuxo");if(c){c.checked=!!a[k];c.dispatchEvent(new Event("change",{bubbles:true}));done.push(k+"="+c.checked)}return}
+    if(selects[k]){var s=E(k);if(s&&selects[k].indexOf(String(a[k]))>=0){s.value=String(a[k]);s.dispatchEvent(new Event("change",{bubbles:true}));done.push(k+"="+a[k])}return}
+    var d=DEFS.find(function(x){return x.id===k});if(!d||!Number.isFinite(+a[k]))return;setField(k,+a[k]);done.push(k+"="+a[k]);
+  });
+  run();return done;
+}
+
+E("aiForm").onsubmit=async function(e){
+  e.preventDefault();var q=E("aiIn").value.trim();if(!q)return;E("aiIn").value="";E("aiChips").style.display="none";addText(q,"u");var w=addText("…","b");
+  var ans=await ask(q);hist.push({r:"u",t:q},{r:"b",t:ans});if(hist.length>16)hist.splice(0,2);
+  var m=ans.match(/ACAO_JSON:\s*(\{[\s\S]*\})\s*$/);var shown=ans.replace(/ACAO_JSON:\s*\{[\s\S]*\}\s*$/,"").trim();w.textContent=shown||"Alteração proposta abaixo.";
+  if(m){var a=null;try{a=JSON.parse(m[1])}catch(x){}if(a){var box=document.createElement("div");box.className="aiAct";box.innerHTML="<b>Alteração proposta</b><br>"+Object.keys(a).map(function(k){return k+" = "+a[k]}).join("<br>")+"<br>";var b=document.createElement("button");b.type="button";b.textContent="Aplicar no painel";b.onclick=function(){var d=apply(a);b.disabled=true;b.textContent="Aplicado";addText(d.length?"Aplicado: "+d.join(", ")+".":"Nenhum valor válido para aplicar.","b")};box.append(b);E("aiMsgs").append(box);E("aiMsgs").scrollTop=1e9}}
+};
+window.__torqueAI={live:live,local:local,apply:apply};
+})();
+</script>
+
 </body>
 </html>
