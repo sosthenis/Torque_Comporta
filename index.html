@@ -1496,7 +1496,7 @@ async function ask(q){
   var sys=KB+"\n\n"+live();
   try{
     if(prov==="gemini"){
-      var m=E("aiModel").value.trim()||"gemini-2.5-flash";
+      var m=E("aiModel").value.trim()||"gemini-3.8-flash";
       var r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(m)+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":k},body:JSON.stringify({systemInstruction:{parts:[{text:sys}]},contents:hist.map(function(h){return {role:h.r==="u"?"user":"model",parts:[{text:h.t}]}}).concat([{role:"user",parts:[{text:q}]}])})});
       var j=await r.json();return j.candidates&&j.candidates[0]&&j.candidates[0].content?j.candidates[0].content.parts.map(function(x){return x.text||""}).join(""):"Erro: "+((j.error&&j.error.message)||"sem resposta");
     }
